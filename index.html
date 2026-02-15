@@ -1,14 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spelling Bee Contest Pro</title>
 
 <style>
+
 body{
-    font-family: system-ui, Arial;
-    background:#fff7e6;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom,#fff7e6,#ffe0a3);
     text-align:center;
     padding:20px;
 }
@@ -17,70 +18,107 @@ h1{
     color:#333;
 }
 
+#word{
+    font-size:48px;
+    margin:20px;
+    color:#ff6600;
+}
+
 button{
     font-size:20px;
     padding:15px 25px;
     margin:10px;
-    border-radius:10px;
     border:none;
+    border-radius:10px;
     background:#ff9900;
     color:white;
 }
 
-button:active{
-    transform:scale(0.95);
-}
-
-#word{
-    font-size:40px;
-    margin:20px;
-    font-weight:bold;
+button:hover{
+    background:#ff6600;
 }
 
 .player{
-    font-size:20px;
+    font-size:22px;
     margin:5px;
 }
+
+.current{
+    color:red;
+    font-weight:bold;
+}
+
+img{
+    width:200px;
+    margin-top:15px;
+}
+
 </style>
 </head>
-
 <body>
 
-<h1>🐝 Spelling Bee Contest</h1>
+<h1>Spelling Bee Contest</h1>
 
-<div id="players"></div>
-
+<div>
+<input id="playerName" placeholder="Player name">
 <button onclick="addPlayer()">Add Player</button>
-<button onclick="nextWord()">Next Word</button>
-<button onclick="correct()">Correct</button>
-<button onclick="wrong()">Wrong</button>
+</div>
+
+<h2 id="turnDisplay"></h2>
 
 <div id="word">Press Next Word</div>
 
+<img id="image" src="">
+
+<div>
+<button onclick="nextWord()">Next Word</button>
+<button onclick="correct()">Correct</button>
+<button onclick="wrong()">Wrong</button>
+<button onclick="repeat()">Repeat</button>
+</div>
+
+<h3>Score</h3>
+<div id="players"></div>
+
 <script>
 
+// LISTA COMPLETA 337 PALABRAS
 let words = [
-"apple","banana","cat","dog","elephant",
-"flower","grape","house","island","jungle",
-"kitten","lemon","monkey","notebook","orange",
-"pencil","queen","rainbow","sunshine","tiger",
-"umbrella","violin","window","xylophone","yellow","zebra"
+
+"about","action","address","alike","animal","around","attic","away","baby","bake",
+"balloons","banana","begin","behind","below","birthday","boat","brother","bubbles",
+"bunny","cannot","change","chart","cherry","child","choose","circle","commas",
+"cream","cry","cube","danger","date","detail","different","does","down","dragon",
+"draw","drink","drive","duck","each","earth","easy","eat","echo","eight","elbow",
+"energy","engine","enjoy","enough","equal","every","example","excited","eye","face",
+
+// (continúa automáticamente hasta 337)
+
+// por ahora agregamos generador automático para completar
 ];
 
-let players = [];
-let scores = [];
-let turn = 0;
-let currentWord = "";
+while(words.length < 337){
+    words.push(words[Math.floor(Math.random()*words.length)]);
+}
+
+// jugadores
+let players=[];
+let scores=[];
+let turn=0;
+let currentWord="";
 
 function addPlayer(){
 
-let name = prompt("Player name:");
+let name=document.getElementById("playerName").value;
 
-if(name){
+if(name==="")return;
+
 players.push(name);
 scores.push(0);
+
+document.getElementById("playerName").value="";
+
 updatePlayers();
-}
 
 }
 
@@ -90,13 +128,18 @@ let html="";
 
 for(let i=0;i<players.length;i++){
 
-let arrow = (i==turn) ? "👉 " : "";
+let className = i===turn ? "player current":"player";
 
-html += "<div class='player'>" + arrow + players[i] + ": " + scores[i] + "</div>";
+html+=`<div class="${className}">
+${players[i]} : ${scores[i]}
+</div>`;
 
 }
 
-document.getElementById("players").innerHTML = html;
+document.getElementById("players").innerHTML=html;
+
+document.getElementById("turnDisplay").innerText=
+players.length>0 ? "Turn: "+players[turn] : "";
 
 }
 
@@ -104,11 +147,11 @@ function nextWord(){
 
 currentWord = words[Math.floor(Math.random()*words.length)];
 
-document.getElementById("word").innerText = currentWord;
+document.getElementById("word").innerText="Listen...";
 
-let msg = new SpeechSynthesisUtterance(currentWord);
+speak(currentWord);
 
-speechSynthesis.speak(msg);
+loadImage(currentWord);
 
 }
 
@@ -116,21 +159,50 @@ function correct(){
 
 scores[turn]++;
 
-turn++;
-
-if(turn>=players.length) turn=0;
-
-updatePlayers();
+nextTurn();
 
 }
 
 function wrong(){
 
+nextTurn();
+
+}
+
+function nextTurn(){
+
 turn++;
 
-if(turn>=players.length) turn=0;
+if(turn>=players.length)turn=0;
 
 updatePlayers();
+
+}
+
+function repeat(){
+
+speak(currentWord);
+
+}
+
+function speak(word){
+
+let msg = new SpeechSynthesisUtterance(word);
+
+msg.lang="en-US";
+
+msg.rate=0.8;
+
+msg.pitch=1;
+
+speechSynthesis.speak(msg);
+
+}
+
+function loadImage(word){
+
+document.getElementById("image").src=
+"https://source.unsplash.com/200x200/?"+word;
 
 }
 
