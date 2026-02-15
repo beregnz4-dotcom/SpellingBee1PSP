@@ -2,827 +2,1202 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Spelling Bee Contest Pro</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Spelling Bee Contest</title>
   <style>
     :root{
-      --bg1:#fff4cf;
-      --bg2:#ffe7a8;
+      --bg1:#FFF3C9;
+      --bg2:#F6D37B;
       --card:#ffffffcc;
-      --line:#e7c66e;
-      --brown:#6a3b12;
-      --shadow: 0 12px 30px rgba(0,0,0,.12);
-      --btnShadow: 0 10px 0 rgba(0,0,0,.15);
+      --ink:#3b2a1f;
+      --muted:#6b5a4a;
+      --accent:#f2a100;
+      --accent2:#8a4b12;
+      --green:#26c281;
+      --red:#e74c3c;
+      --purple:#7c4dff;
+      --shadow: 0 14px 30px rgba(0,0,0,.18);
       --radius: 22px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(circle at 20% 0%, var(--bg2), transparent 55%),
-        radial-gradient(circle at 80% 10%, #fff1b5, transparent 55%),
-        linear-gradient(180deg, var(--bg1), #fffaf0);
-      color:#1a1a1a;
+      color:var(--ink);
       min-height:100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.7), rgba(255,255,255,0) 35%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.55), rgba(255,255,255,0) 30%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
       display:flex;
-      align-items:flex-start;
       justify-content:center;
-      padding:18px;
+      padding:20px 14px 30px;
+    }
+    /* honeycomb overlay */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.18;
+      background-image:
+        linear-gradient(30deg, rgba(0,0,0,.08) 12%, transparent 12.5%, transparent 87%, rgba(0,0,0,.08) 87.5%, rgba(0,0,0,.08)),
+        linear-gradient(150deg, rgba(0,0,0,.08) 12%, transparent 12.5%, transparent 87%, rgba(0,0,0,.08) 87.5%, rgba(0,0,0,.08)),
+        linear-gradient(90deg, rgba(0,0,0,.08) 12%, transparent 12.5%, transparent 87%, rgba(0,0,0,.08) 87.5%, rgba(0,0,0,.08));
+      background-size: 46px 80px;
+      background-position: 0 0, 0 0, 23px 40px;
     }
 
-    .app{
-      width:min(520px, 100%);
-    }
-
-    .header{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      padding:18px 18px 12px;
+    .app{width:min(980px, 100%); display:grid; gap:16px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px;
+      padding:16px 18px;
+      background: rgba(255,255,255,.55);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, #fff7d6, #fff2c0);
       box-shadow: var(--shadow);
-      border: 1px solid rgba(231,198,110,.55);
+      backdrop-filter: blur(8px);
     }
-    .title{
-      display:flex;
-      align-items:center;
-      gap:12px;
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:900;
+      letter-spacing:.2px;
+      line-height:1.05;
     }
     .bee{
-      width:44px;height:44px;border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, #fff, #ffe6a0);
-      display:grid;place-items:center;
-      border:1px solid rgba(231,198,110,.6);
-      box-shadow: 0 10px 20px rgba(0,0,0,.08);
-      font-size:26px;
+      width:46px; height:46px; border-radius:16px;
+      display:grid; place-items:center;
+      background: #fff;
+      box-shadow: 0 10px 20px rgba(0,0,0,.12);
+      overflow:hidden;
     }
-    h1{
-      margin:0;
-      color: var(--brown);
-      font-weight:900;
-      line-height:1.05;
-      letter-spacing:.2px;
-      font-size: 28px;
-    }
-    .sub{
-      margin:6px 0 0;
-      color:#6b5b3a;
-      font-size:13px;
-      opacity:.95;
-    }
-
-    .pillrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .bee svg{width:36px;height:36px}
+    .subtitle{font-weight:600;color:var(--muted); font-size:13px; margin-top:2px}
+    .pills{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
     .pill{
-      background:#fff;
-      border:1px solid rgba(231,198,110,.75);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      color:#6b5b3a;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.75);
+      font-weight:800;
+      box-shadow: 0 8px 16px rgba(0,0,0,.08);
+      font-size:13px;
+      color:var(--muted);
+      display:flex; align-items:center; gap:8px;
+    }
+    .dot{width:10px;height:10px;border-radius:50%; background: var(--accent)}
+    .dot.green{background:var(--green)}
+    .dot.red{background:var(--red)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns: 1fr}
     }
 
     .card{
-      margin-top:14px;
-      background: var(--card);
-      border:1px solid rgba(231,198,110,.55);
+      background: rgba(255,255,255,.65);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
       overflow:hidden;
     }
-
-    .section{
-      padding:16px 16px 12px;
-      border-top:1px solid rgba(231,198,110,.35);
+    .cardHead{
+      padding:14px 16px;
+      border-bottom: 1px solid rgba(0,0,0,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
-    .section:first-child{border-top:none}
+    .cardHead h2{margin:0;font-size:16px}
+    .cardBody{padding:16px}
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:center;
-    }
+    .setupRow{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width: 520px){ .setupRow{grid-template-columns:1fr} }
 
-    input[type="text"]{
-      width: 100%;
-      max-width: 280px;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(231,198,110,.9);
-      outline:none;
+    .input{
+      width:100%;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.85);
       font-size:16px;
-      background:#fff;
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      outline:none;
     }
-
     .btn{
       border:none;
+      border-radius: 18px;
       padding:14px 16px;
-      border-radius: 16px;
       font-weight:900;
-      letter-spacing:.2px;
+      letter-spacing:.3px;
       cursor:pointer;
-      box-shadow: var(--btnShadow);
-      transform: translateY(0);
-      transition: transform .05s ease;
+      box-shadow: 0 14px 20px rgba(0,0,0,.16);
+      transition: transform .08s ease, filter .15s ease, opacity .15s ease;
       user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      white-space:nowrap;
     }
-    .btn:active{ transform: translateY(3px); box-shadow: 0 7px 0 rgba(0,0,0,.14); }
-    .btn:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      box-shadow:none;
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn[disabled]{opacity:.5; cursor:not-allowed; box-shadow:none}
+    .btnPrimary{background: var(--accent); color:#fff;}
+    .btnPurple{background: var(--purple); color:#fff;}
+    .btnGreen{background: var(--green); color:#fff;}
+    .btnRed{background: var(--red); color:#fff;}
+    .btnGhost{
+      background: rgba(255,255,255,.85);
+      color: var(--ink);
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 10px 16px rgba(0,0,0,.10);
     }
 
-    .btn-orange{ background:#f59e0b; color:#fff; }
-    .btn-purple{ background:#7c3aed; color:#fff; }
-    .btn-green{ background:#16a34a; color:#fff; }
-    .btn-red{ background:#ef4444; color:#fff; }
-    .btn-dark{ background:#111827; color:#fff; }
-    .btn-ghost{ background:#fff; color:#6b5b3a; border:1px solid rgba(231,198,110,.9); box-shadow: 0 10px 0 rgba(0,0,0,.06); }
-
-    .turn{
+    .bigCenter{
       text-align:center;
-      font-size:18px;
-      font-weight:900;
-      margin:4px 0 10px;
-      color:#1f2937;
+      padding: 14px 10px 4px;
+    }
+    .word{
+      font-size: 56px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+      margin: 6px 0 0;
+      color: #4a2c16;
+      text-transform: uppercase;
+    }
+    @media (max-width:520px){ .word{font-size:44px} }
+
+    .wordHint{
+      margin: 6px 0 12px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
     }
 
-    .stage{
+    .imageWrap{
+      width: 260px; height: 260px;
+      margin: 10px auto 16px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 14px 26px rgba(0,0,0,.16);
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .imageWrap:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle, rgba(242,161,0,.18), rgba(242,161,0,0) 60%);
+      transform: rotate(18deg);
+    }
+    .img{
+      width: 86%;
+      height: 86%;
+      object-fit: contain;
+      position:relative;
+      animation: floaty 2.2s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%,100%{transform: translateY(0)}
+      50%{transform: translateY(-6px)}
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin: 10px 0 12px;
+    }
+    .controls3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+      margin: 10px 0 6px;
+    }
+    @media (max-width:520px){
+      .controls3{grid-template-columns:1fr}
+    }
+
+    .spin{
+      position:relative;
+      overflow:hidden;
+    }
+    .spin.spinning{
+      animation: spinPulse .6s ease-in-out 1;
+    }
+    @keyframes spinPulse{
+      0%{transform: scale(1)}
+      35%{transform: scale(1.03)}
+      100%{transform: scale(1)}
+    }
+
+    .scoreBoard{
       display:grid;
       gap:12px;
-      justify-items:center;
-      padding:6px 0 8px;
     }
-
-    .wordBig{
-      font-size:56px;
-      font-weight:1000;
-      letter-spacing:1px;
-      color: var(--brown);
-      text-transform: uppercase;
-      text-align:center;
-      line-height:1;
-      margin:0;
-      display:none;
+    .playerCard{
+      background: rgba(255,255,255,.78);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display:flex; align-items:center; justify-content:space-between;
+      box-shadow: 0 10px 18px rgba(0,0,0,.10);
     }
-    .hint{
-      margin:0;
-      color:#6b5b3a;
-      font-size:13px;
-      text-align:center;
-      opacity:.95;
-    }
-
-    .imgwrap{
-      width: 240px;
-      height: 240px;
-      border-radius: 26px;
-      background: #ffffff;
-      border: 1px solid rgba(231,198,110,.7);
-      box-shadow: 0 16px 34px rgba(0,0,0,.10);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      position:relative;
-    }
-    .imgwrap img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
-
-    .spinOverlay{
-      position:absolute;
-      inset:0;
-      background: radial-gradient(circle at 50% 45%, rgba(255,255,255,.88), rgba(255,255,255,.55));
-      display:none;
-      place-items:center;
-      gap:10px;
-      padding:10px;
-      text-align:center;
+    .playerName{font-weight:950}
+    .playerMeta{display:flex; gap:10px; align-items:center}
+    .badge{
+      padding:6px 10px;
+      border-radius: 999px;
+      background: rgba(242,161,0,.18);
       font-weight:900;
-      color:#6b5b3a;
-    }
-    .spinner{
-      width:54px;height:54px;border-radius:50%;
-      border:6px solid rgba(245,158,11,.25);
-      border-top-color: rgba(245,158,11,.95);
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    .scoregrid{
-      display:grid;
-      gap:10px;
-      padding:14px 16px 18px;
-    }
-    .scoreTitle{
-      font-weight:1000;
-      color:#6b5b3a;
-      letter-spacing:.4px;
-    }
-    .playerRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:12px 12px;
-      border-radius:16px;
-      background:#fff;
-      border:1px solid rgba(231,198,110,.55);
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-    }
-    .playerName{
-      display:flex;align-items:center;gap:10px;
-      font-weight:900;
-    }
-    .tag{
       font-size:12px;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#f59e0b;
-      color:#fff;
-      font-weight:1000;
-      display:none;
+      color: #7a4a13;
     }
     .points{
-      width:44px;height:44px;border-radius:14px;
-      display:grid;place-items:center;
-      background:#111827;
-      color:#fff;
+      min-width: 52px;
+      text-align:center;
       font-weight:1000;
       font-size:18px;
+      padding:8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.08);
     }
 
-    .tiny{
+    .small{
+      color:var(--muted);
       font-size:12px;
-      color:#6b5b3a;
-      opacity:.95;
-      text-align:center;
-      padding:0 16px 14px;
+      font-weight:650;
+      line-height:1.35;
     }
 
-    .settings{
-      display:grid;
-      gap:10px;
-    }
-    .settings label{
-      font-size:12px;color:#6b5b3a;font-weight:800;
-    }
-    select{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(231,198,110,.9);
-      background:#fff;
-      font-size:14px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-    }
-    .tog{
-      display:flex;align-items:center;gap:10px;
-      justify-content:space-between;
-      padding:10px 12px;
-      border-radius:14px;
-      background:#fff;
-      border:1px solid rgba(231,198,110,.55);
-      box-shadow: 0 10px 18px rgba(0,0,0,.06);
-      font-size:13px;color:#6b5b3a;font-weight:800;
-    }
-    .tog input{ transform: scale(1.2); }
+    .hidden{display:none !important}
+    .hr{height:1px;background:rgba(0,0,0,.10);margin:12px 0}
+    .rowEnd{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
   </style>
 </head>
-
 <body>
   <div class="app">
-    <div class="header">
-      <div class="title">
-        <div class="bee">🐝</div>
-        <div>
-          <h1>Spelling Bee Contest</h1>
-          <div class="sub">No repeats until you reset • You control the turn • Progress saved</div>
+    <div class="topbar">
+      <div>
+        <div class="brand">
+          <div class="bee" aria-hidden="true">
+            <!-- simple bee svg -->
+            <svg viewBox="0 0 64 64">
+              <circle cx="30" cy="34" r="18" fill="#FFD35A"/>
+              <rect x="18" y="26" width="24" height="6" rx="3" fill="#3b2a1f"/>
+              <rect x="18" y="36" width="24" height="6" rx="3" fill="#3b2a1f"/>
+              <circle cx="24" cy="34" r="2.8" fill="#111"/>
+              <circle cx="36" cy="34" r="2.8" fill="#111"/>
+              <path d="M22 42c4 4 16 4 20 0" stroke="#3b2a1f" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <ellipse cx="44" cy="24" rx="10" ry="7" fill="#fff" opacity=".9"/>
+              <ellipse cx="48" cy="20" rx="8" ry="6" fill="#fff" opacity=".7"/>
+              <circle cx="14" cy="34" r="10" fill="#8a4b12" opacity=".9"/>
+              <path d="M28 18l-6-8" stroke="#3b2a1f" stroke-width="3" stroke-linecap="round"/>
+              <path d="M36 18l6-8" stroke="#3b2a1f" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:22px">Spelling Bee Contest</div>
+            <div class="subtitle">No repeats until the round ends • You control the turn • Auto-save</div>
+          </div>
         </div>
       </div>
-      <div class="pillrow">
-        <div class="pill" id="pillRemaining">Remaining: —</div>
-        <div class="pill" id="pillRound">Round: —</div>
+
+      <div class="pills">
+        <div class="pill"><span class="dot"></span><span id="pillTurn">Turn: —</span></div>
+        <div class="pill"><span class="dot green"></span><span id="pillRemain">Remaining: —</span></div>
+        <div class="pill"><span class="dot red"></span><span id="pillRound">Round: —</span></div>
       </div>
     </div>
 
-    <div class="card">
-      <!-- Players -->
-      <div class="section">
-        <div class="row">
-          <input id="playerInput" type="text" placeholder="Player name (Aitana, Pedro)" />
-          <button class="btn btn-orange" id="btnAdd">Add Player</button>
+    <div class="grid">
+      <!-- LEFT: GAME -->
+      <div class="card">
+        <div class="cardHead">
+          <h2 id="panelTitle">Setup</h2>
+          <div class="rowEnd">
+            <button class="btn btnGhost" id="btnResetAll" type="button" title="Hard reset: clears saved progress">Hard Reset</button>
+          </div>
         </div>
-      </div>
-
-      <!-- Game -->
-      <div class="section">
-        <div class="turn" id="turnLabel">Turn: —</div>
-
-        <div class="stage">
-          <p class="hint" id="hintTop">Press <b>SPIN WORD</b> to get a new word (no repeats).</p>
-
-          <div class="imgwrap">
-            <img id="wordImg" alt="word image" src="img/placeholder.png" />
-            <div class="spinOverlay" id="spinOverlay">
-              <div class="spinner"></div>
-              <div>Spinning…</div>
+        <div class="cardBody">
+          <!-- SETUP SCREEN -->
+          <div id="setupScreen">
+            <div class="setupRow">
+              <input id="p1" class="input" placeholder="Player 1 (e.g., Aitana)" />
+              <input id="p2" class="input" placeholder="Player 2 (e.g., Pedro)" />
+            </div>
+            <div class="hr"></div>
+            <div class="setupRow">
+              <div>
+                <div class="small"><b>Voice</b> (uses the best available on your device)</div>
+                <select id="voiceSelect" class="input"></select>
+              </div>
+              <div>
+                <div class="small"><b>Speed</b></div>
+                <select id="rateSelect" class="input">
+                  <option value="0.9">0.9 (slow)</option>
+                  <option value="1.0" selected>1.0 (normal)</option>
+                  <option value="1.05">1.05</option>
+                  <option value="1.1">1.1</option>
+                </select>
+              </div>
+            </div>
+            <div class="hr"></div>
+            <button class="btn btnPrimary" id="btnStart" type="button" style="width:100%; font-size:18px;">
+              START CONTEST!
+            </button>
+            <div class="small" style="margin-top:10px">
+              Tip iPhone: si no habla, toca “SPIN WORD” otra vez (Safari requiere acción del usuario).
             </div>
           </div>
 
-          <h2 class="wordBig" id="wordBig">WORD</h2>
-          <p class="hint" id="hintReveal">Tap <b>SHOW WORD</b> if you want to reveal it (optional).</p>
+          <!-- GAME SCREEN -->
+          <div id="gameScreen" class="hidden">
+            <div class="bigCenter">
+              <div class="small" id="activeSpeller">ACTIVE SPELLER</div>
+              <div class="wordHint" id="activeName">—</div>
+              <div class="word" id="wordText">PRESS SPIN</div>
+              <div class="wordHint" id="wordSub">Tap “PLAY AUDIO” to hear it again.</div>
+            </div>
 
-          <div class="row">
-            <button class="btn btn-orange" id="btnSpin">SPIN WORD</button>
-            <button class="btn btn-purple" id="btnAudio">PLAY AUDIO</button>
-            <button class="btn btn-ghost" id="btnShow">SHOW WORD</button>
-          </div>
+            <div class="imageWrap" aria-label="Word image">
+              <img id="wordImg" class="img" src="img/placeholder.png" alt="Word image" />
+            </div>
 
-          <div class="row">
-            <button class="btn btn-green" id="btnCorrect">✅ CORRECT</button>
-            <button class="btn btn-red" id="btnWrong">❌ WRONG</button>
-          </div>
+            <div class="controls3">
+              <button class="btn btnPrimary spin" id="btnSpin" type="button">SPIN WORD!</button>
+              <button class="btn btnPurple" id="btnSpeak" type="button">🔊 PLAY AUDIO</button>
+              <button class="btn btnGhost" id="btnReveal" type="button">SHOW WORD</button>
+            </div>
 
-          <div class="row">
-            <button class="btn btn-dark" id="btnNextPlayer">NEXT PLAYER ➜</button>
-          </div>
+            <div class="controls">
+              <button class="btn btnGreen" id="btnCorrect" type="button">✅ CORRECT</button>
+              <button class="btn btnRed" id="btnWrong" type="button">❌ WRONG</button>
+            </div>
 
-          <div class="tiny" id="tinyMsg">
-            iPhone tip: if audio doesn’t play, tap <b>PLAY AUDIO</b> again (Safari sometimes needs a second user action).
+            <div class="controls">
+              <button class="btn btnGhost" id="btnNextPlayer" type="button">SWITCH TO NEXT PLAYER</button>
+              <button class="btn btnGhost" id="btnEndRound" type="button">END ROUND (Report)</button>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="small"><b>Saved automatically.</b> Close Safari and come back anytime.</div>
           </div>
         </div>
       </div>
 
-      <!-- Score -->
-      <div class="section scoregrid">
-        <div class="scoreTitle">SCORE</div>
-        <div id="scoreList"></div>
-
-        <div class="row" style="justify-content:center;">
-          <button class="btn btn-ghost" id="btnResetRound">Reset Round (words only)</button>
-          <button class="btn btn-ghost" id="btnResetScores">Reset Scores</button>
-          <button class="btn btn-red" id="btnHardReset">Hard Reset (all)</button>
+      <!-- RIGHT: SCORE -->
+      <div class="card">
+        <div class="cardHead">
+          <h2>Score</h2>
+          <div class="rowEnd">
+            <button class="btn btnGhost" id="btnResetScores" type="button">Reset Scores</button>
+            <button class="btn btnGhost" id="btnResetRound" type="button">Reset Round</button>
+          </div>
         </div>
-      </div>
-
-      <!-- Settings -->
-      <div class="section">
-        <div class="settings">
-          <div class="tog">
-            <span>Always show word (for practice)</span>
-            <input type="checkbox" id="togAlwaysShow"/>
-          </div>
-
-          <label for="voiceSelect">Voice (best available on this device)</label>
-          <select id="voiceSelect"></select>
-
-          <div class="row" style="justify-content:flex-end;">
-            <button class="btn btn-ghost" id="btnSave">Save</button>
-          </div>
-
-          <div class="tiny">
-            Note: “Alexa/Google” voice is not possible offline in pure HTML. This uses your device’s best English voice (often “Google US English” on many devices).
-          </div>
+        <div class="cardBody">
+          <div class="scoreBoard" id="scoreBoard"></div>
+          <div class="hr"></div>
+          <div class="small" id="statusLine">—</div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-/** ========= WORD LIST (337) ========= **/
-const WORDS_RAW = [
-"about","action","address","alike","animal","around","attic","away","baby","bake","balloons","banana","begin","behind","below","birthday","boat","brother","bubbles","bunny","cannot","change","chart","cherry","child","choose","circle","commas","cream","cry","cube","danger","date","detail","different","does","down","dragon","draw","drink","drive","duck","each","earth","easy","eat","echo","eight","elbow","English","shade","share","shows","simple","sizes","skate","skunk","sleep","small","smile","smooth","snack","snake","soapy","soil","solids","sound","vowel","evaporate","family","farmer","farther","fast","feet","fence","find","flower","freeze","friend","frog","front","funny","game","giant","gift","giggle","globe","goat","good","goose","great","green","grin","ground","group","guess","gym","habitat","hair","half","hamster","happen","happy","head","heard","held","here","hide","hobby","honey","hop","horse","hour","huge","hurt","hut","ice","ideas","tablet","tack","tactic","taffy","tailor","talent","tame","target","tasty","temple","tempo","tennis","tense","tepee","thigh","think","thirst","wage","igloo","inch","insects","inside","iron","itch","jail","jam","jelly","join","joke","jolly","judge","juggle","July","jungle","junk","keep","kettle","key","kick","kinds","kiss","kite","kitten","knife","lakes","lamb","lamp","land","laugh","lazy","lemon","letter","library","life","lift","lime","line","liquid","listen","liter","little","loud","love","lunch","machine","magic","magnet","umpire","unable","uncle","under","until","vague","vain","valor","value","vapor","vast","verbs","vest","vibrate","visit","voice","wagon","make","many","meal","might","Monday","money","monkey","mother","motor","mouse","mouth","move","much","music","near","neat","neck","needle","never","next","nickel","night","nine","noise","none","north","nose","notice","noun","number","oak","object","ocean","offer","office","once","one","onion","only","order","other","ounce","outside","oval","oven","over","owe","owl","page","pain","walk","warn","water","were","wheel","with","won","story","stove","summer","Sunday","suppose","sure","table","speak","special","stamp","store","paint","pair","palace","palm","paper","patch","peace","peach","peanut","pencil","penny","people","pepper","perfect","person","phone","pickles","picture","piece","pile","pilot","pine","places","plate","play","pretty","prize","puppet","puppy","purple","push","quart","queen","quiet","radio","raft","raise","rang","read","ready","really","repeat","return","reuse","rhyme","riddle","robot","sense","sentence","word","would","write","writer","year","your","time","tomorrow","tooth","town","tree","turtle","ugly","thirty","thorn","throb","throw","wait"
+/* ===========================
+   337 WORDS (display + file)
+   - file: must match your /img filenames (lowercase)
+   - display: what you see on screen (keeps proper capitalization)
+=========================== */
+const WORDS = [
+  {file:"about", display:"about"},
+  {file:"action", display:"action"},
+  {file:"address", display:"address"},
+  {file:"alike", display:"alike"},
+  {file:"animal", display:"animal"},
+  {file:"around", display:"around"},
+  {file:"attic", display:"attic"},
+  {file:"away", display:"away"},
+  {file:"baby", display:"baby"},
+  {file:"bake", display:"bake"},
+  {file:"balloons", display:"balloons"},
+  {file:"banana", display:"banana"},
+  {file:"begin", display:"begin"},
+  {file:"behind", display:"behind"},
+  {file:"below", display:"below"},
+  {file:"birthday", display:"birthday"},
+  {file:"boat", display:"boat"},
+  {file:"brother", display:"brother"},
+  {file:"bubbles", display:"bubbles"},
+  {file:"bunny", display:"bunny"},
+  {file:"cannot", display:"cannot"},
+  {file:"change", display:"change"},
+  {file:"chart", display:"chart"},
+  {file:"cherry", display:"cherry"},
+  {file:"child", display:"child"},
+  {file:"choose", display:"choose"},
+  {file:"circle", display:"circle"},
+  {file:"commas", display:"commas"},
+  {file:"cream", display:"cream"},
+  {file:"cry", display:"cry"},
+  {file:"cube", display:"cube"},
+  {file:"danger", display:"danger"},
+  {file:"date", display:"date"},
+  {file:"detail", display:"detail"},
+  {file:"different", display:"different"},
+  {file:"does", display:"does"},
+  {file:"down", display:"down"},
+  {file:"dragon", display:"dragon"},
+  {file:"draw", display:"draw"},
+  {file:"drink", display:"drink"},
+  {file:"drive", display:"drive"},
+  {file:"duck", display:"duck"},
+  {file:"each", display:"each"},
+  {file:"earth", display:"earth"},
+  {file:"easy", display:"easy"},
+  {file:"eat", display:"eat"},
+  {file:"echo", display:"echo"},
+  {file:"eight", display:"eight"},
+  {file:"elbow", display:"elbow"},
+  {file:"english", display:"English"},
+  {file:"shade", display:"shade"},
+  {file:"share", display:"share"},
+  {file:"shows", display:"shows"},
+  {file:"simple", display:"simple"},
+  {file:"sizes", display:"sizes"},
+  {file:"skate", display:"skate"},
+  {file:"skunk", display:"skunk"},
+  {file:"sleep", display:"sleep"},
+  {file:"small", display:"small"},
+  {file:"smile", display:"smile"},
+  {file:"smooth", display:"smooth"},
+  {file:"snack", display:"snack"},
+  {file:"snake", display:"snake"},
+  {file:"soapy", display:"soapy"},
+  {file:"soil", display:"soil"},
+  {file:"solids", display:"solids"},
+  {file:"sound", display:"sound"},
+  {file:"vowel", display:"vowel"},
+  {file:"evaporate", display:"evaporate"},
+  {file:"family", display:"family"},
+  {file:"farmer", display:"farmer"},
+  {file:"farther", display:"farther"},
+  {file:"fast", display:"fast"},
+  {file:"feet", display:"feet"},
+  {file:"fence", display:"fence"},
+  {file:"find", display:"find"},
+  {file:"flower", display:"flower"},
+  {file:"freeze", display:"freeze"},
+  {file:"friend", display:"friend"},
+  {file:"frog", display:"frog"},
+  {file:"front", display:"front"},
+  {file:"funny", display:"funny"},
+  {file:"game", display:"game"},
+  {file:"giant", display:"giant"},
+  {file:"gift", display:"gift"},
+  {file:"giggle", display:"giggle"},
+  {file:"globe", display:"globe"},
+  {file:"goat", display:"goat"},
+  {file:"good", display:"good"},
+  {file:"goose", display:"goose"},
+  {file:"great", display:"great"},
+  {file:"green", display:"green"},
+  {file:"grin", display:"grin"},
+  {file:"ground", display:"ground"},
+  {file:"group", display:"group"},
+  {file:"guess", display:"guess"},
+  {file:"gym", display:"gym"},
+  {file:"habitat", display:"habitat"},
+  {file:"hair", display:"hair"},
+  {file:"half", display:"half"},
+  {file:"hamster", display:"hamster"},
+  {file:"happen", display:"happen"},
+  {file:"happy", display:"happy"},
+  {file:"head", display:"head"},
+  {file:"heard", display:"heard"},
+  {file:"held", display:"held"},
+  {file:"here", display:"here"},
+  {file:"hide", display:"hide"},
+  {file:"hobby", display:"hobby"},
+  {file:"honey", display:"honey"},
+  {file:"hop", display:"hop"},
+  {file:"horse", display:"horse"},
+  {file:"hour", display:"hour"},
+  {file:"huge", display:"huge"},
+  {file:"hurt", display:"hurt"},
+  {file:"hut", display:"hut"},
+  {file:"ice", display:"ice"},
+  {file:"ideas", display:"ideas"},
+  {file:"tablet", display:"tablet"},
+  {file:"tack", display:"tack"},
+  {file:"tactic", display:"tactic"},
+  {file:"taffy", display:"taffy"},
+  {file:"tailor", display:"tailor"},
+  {file:"talent", display:"talent"},
+  {file:"tame", display:"tame"},
+  {file:"target", display:"target"},
+  {file:"tasty", display:"tasty"},
+  {file:"temple", display:"temple"},
+  {file:"tempo", display:"tempo"},
+  {file:"tennis", display:"tennis"},
+  {file:"tense", display:"tense"},
+  {file:"tepee", display:"tepee"},
+  {file:"thigh", display:"thigh"},
+  {file:"think", display:"think"},
+  {file:"thirst", display:"thirst"},
+  {file:"wage", display:"wage"},
+  {file:"igloo", display:"igloo"},
+  {file:"inch", display:"inch"},
+  {file:"insects", display:"insects"},
+  {file:"inside", display:"inside"},
+  {file:"iron", display:"iron"},
+  {file:"itch", display:"itch"},
+  {file:"jail", display:"jail"},
+  {file:"jam", display:"jam"},
+  {file:"jelly", display:"jelly"},
+  {file:"join", display:"join"},
+  {file:"joke", display:"joke"},
+  {file:"jolly", display:"jolly"},
+  {file:"judge", display:"judge"},
+  {file:"juggle", display:"juggle"},
+  {file:"july", display:"July"},
+  {file:"jungle", display:"jungle"},
+  {file:"junk", display:"junk"},
+  {file:"keep", display:"keep"},
+  {file:"kettle", display:"kettle"},
+  {file:"key", display:"key"},
+  {file:"kick", display:"kick"},
+  {file:"kinds", display:"kinds"},
+  {file:"kiss", display:"kiss"},
+  {file:"kite", display:"kite"},
+  {file:"kitten", display:"kitten"},
+  {file:"knife", display:"knife"},
+  {file:"lakes", display:"lakes"},
+  {file:"lamb", display:"lamb"},
+  {file:"lamp", display:"lamp"},
+  {file:"land", display:"land"},
+  {file:"laugh", display:"laugh"},
+  {file:"lazy", display:"lazy"},
+  {file:"lemon", display:"lemon"},
+  {file:"letter", display:"letter"},
+  {file:"library", display:"library"},
+  {file:"life", display:"life"},
+  {file:"lift", display:"lift"},
+  {file:"lime", display:"lime"},
+  {file:"line", display:"line"},
+  {file:"liquid", display:"liquid"},
+  {file:"listen", display:"listen"},
+  {file:"liter", display:"liter"},
+  {file:"little", display:"little"},
+  {file:"loud", display:"loud"},
+  {file:"love", display:"love"},
+  {file:"lunch", display:"lunch"},
+  {file:"machine", display:"machine"},
+  {file:"magic", display:"magic"},
+  {file:"magnet", display:"magnet"},
+  {file:"umpire", display:"umpire"},
+  {file:"unable", display:"unable"},
+  {file:"uncle", display:"uncle"},
+  {file:"under", display:"under"},
+  {file:"until", display:"until"},
+  {file:"vague", display:"vague"},
+  {file:"vain", display:"vain"},
+  {file:"valor", display:"valor"},
+  {file:"value", display:"value"},
+  {file:"vapor", display:"vapor"},
+  {file:"vast", display:"vast"},
+  {file:"verbs", display:"verbs"},
+  {file:"vest", display:"vest"},
+  {file:"vibrate", display:"vibrate"},
+  {file:"visit", display:"visit"},
+  {file:"voice", display:"voice"},
+  {file:"wagon", display:"wagon"},
+  {file:"make", display:"make"},
+  {file:"many", display:"many"},
+  {file:"meal", display:"meal"},
+  {file:"might", display:"might"},
+  {file:"monday", display:"Monday"},
+  {file:"money", display:"money"},
+  {file:"monkey", display:"monkey"},
+  {file:"mother", display:"mother"},
+  {file:"motor", display:"motor"},
+  {file:"mouse", display:"mouse"},
+  {file:"mouth", display:"mouth"},
+  {file:"move", display:"move"},
+  {file:"much", display:"much"},
+  {file:"music", display:"music"},
+  {file:"near", display:"near"},
+  {file:"neat", display:"neat"},
+  {file:"neck", display:"neck"},
+  {file:"needle", display:"needle"},
+  {file:"never", display:"never"},
+  {file:"next", display:"next"},
+  {file:"nickel", display:"nickel"},
+  {file:"night", display:"night"},
+  {file:"nine", display:"nine"},
+  {file:"noise", display:"noise"},
+  {file:"none", display:"none"},
+  {file:"north", display:"north"},
+  {file:"nose", display:"nose"},
+  {file:"notice", display:"notice"},
+  {file:"noun", display:"noun"},
+  {file:"number", display:"number"},
+  {file:"oak", display:"oak"},
+  {file:"object", display:"object"},
+  {file:"ocean", display:"ocean"},
+  {file:"offer", display:"offer"},
+  {file:"office", display:"office"},
+  {file:"once", display:"once"},
+  {file:"one", display:"one"},
+  {file:"onion", display:"onion"},
+  {file:"only", display:"only"},
+  {file:"order", display:"order"},
+  {file:"other", display:"other"},
+  {file:"ounce", display:"ounce"},
+  {file:"outside", display:"outside"},
+  {file:"oval", display:"oval"},
+  {file:"oven", display:"oven"},
+  {file:"over", display:"over"},
+  {file:"owe", display:"owe"},
+  {file:"owl", display:"owl"},
+  {file:"page", display:"page"},
+  {file:"pain", display:"pain"},
+  {file:"walk", display:"walk"},
+  {file:"warn", display:"warn"},
+  {file:"water", display:"water"},
+  {file:"were", display:"were"},
+  {file:"wheel", display:"wheel"},
+  {file:"with", display:"with"},
+  {file:"won", display:"won"},
+  {file:"story", display:"story"},
+  {file:"stove", display:"stove"},
+  {file:"summer", display:"summer"},
+  {file:"sunday", display:"Sunday"},
+  {file:"suppose", display:"suppose"},
+  {file:"sure", display:"sure"},
+  {file:"table", display:"table"},
+  {file:"speak", display:"speak"},
+  {file:"special", display:"special"},
+  {file:"stamp", display:"stamp"},
+  {file:"store", display:"store"},
+  {file:"paint", display:"paint"},
+  {file:"pair", display:"pair"},
+  {file:"palace", display:"palace"},
+  {file:"palm", display:"palm"},
+  {file:"paper", display:"paper"},
+  {file:"patch", display:"patch"},
+  {file:"peace", display:"peace"},
+  {file:"peach", display:"peach"},
+  {file:"peanut", display:"peanut"},
+  {file:"pencil", display:"pencil"},
+  {file:"penny", display:"penny"},
+  {file:"people", display:"people"},
+  {file:"pepper", display:"pepper"},
+  {file:"perfect", display:"perfect"},
+  {file:"person", display:"person"},
+  {file:"phone", display:"phone"},
+  {file:"pickles", display:"pickles"},
+  {file:"picture", display:"picture"},
+  {file:"piece", display:"piece"},
+  {file:"pile", display:"pile"},
+  {file:"pilot", display:"pilot"},
+  {file:"pine", display:"pine"},
+  {file:"places", display:"places"},
+  {file:"plate", display:"plate"},
+  {file:"play", display:"play"},
+  {file:"pretty", display:"pretty"},
+  {file:"prize", display:"prize"},
+  {file:"puppet", display:"puppet"},
+  {file:"puppy", display:"puppy"},
+  {file:"purple", display:"purple"},
+  {file:"push", display:"push"},
+  {file:"quart", display:"quart"},
+  {file:"queen", display:"queen"},
+  {file:"quiet", display:"quiet"},
+  {file:"radio", display:"radio"},
+  {file:"raft", display:"raft"},
+  {file:"raise", display:"raise"},
+  {file:"rang", display:"rang"},
+  {file:"read", display:"read"},
+  {file:"ready", display:"ready"},
+  {file:"really", display:"really"},
+  {file:"repeat", display:"repeat"},
+  {file:"return", display:"return"},
+  {file:"reuse", display:"reuse"},
+  {file:"rhyme", display:"rhyme"},
+  {file:"riddle", display:"riddle"},
+  {file:"robot", display:"robot"},
+  {file:"sense", display:"sense"},
+  {file:"sentence", display:"sentence"},
+  {file:"word", display:"word"},
+  {file:"would", display:"would"},
+  {file:"write", display:"write"},
+  {file:"writer", display:"writer"},
+  {file:"year", display:"year"},
+  {file:"your", display:"your"},
+  {file:"time", display:"time"},
+  {file:"tomorrow", display:"tomorrow"},
+  {file:"tooth", display:"tooth"},
+  {file:"town", display:"town"},
+  {file:"tree", display:"tree"},
+  {file:"turtle", display:"turtle"},
+  {file:"ugly", display:"ugly"},
+  {file:"thirty", display:"thirty"},
+  {file:"thorn", display:"thorn"},
+  {file:"throb", display:"throb"},
+  {file:"throw", display:"throw"},
+  {file:"wait", display:"wait"},
 ];
 
-const WORDS = WORDS_RAW.map(w => String(w).trim()).filter(Boolean);
+// --- helpers
+const $ = (id)=>document.getElementById(id);
+const STORAGE_KEY = "spellingbee_contest_v3";
 
-/** ========= STATE ========= **/
-const KEY = "spellingBeeProState_v3";
+// UI refs
+const setupScreen = $("setupScreen");
+const gameScreen  = $("gameScreen");
+const panelTitle  = $("panelTitle");
+const scoreBoard  = $("scoreBoard");
+const statusLine  = $("statusLine");
 
+const pillTurn  = $("pillTurn");
+const pillRemain= $("pillRemain");
+const pillRound = $("pillRound");
+
+const p1 = $("p1"), p2 = $("p2");
+
+const voiceSelect = $("voiceSelect");
+const rateSelect  = $("rateSelect");
+
+const btnStart = $("btnStart");
+const btnSpin  = $("btnSpin");
+const btnSpeak = $("btnSpeak");
+const btnReveal= $("btnReveal");
+const btnCorrect = $("btnCorrect");
+const btnWrong   = $("btnWrong");
+const btnNextPlayer = $("btnNextPlayer");
+const btnEndRound   = $("btnEndRound");
+
+const btnResetScores = $("btnResetScores");
+const btnResetRound  = $("btnResetRound");
+const btnResetAll    = $("btnResetAll");
+
+const activeName = $("activeName");
+const wordText   = $("wordText");
+const wordSub    = $("wordSub");
+const wordImg    = $("wordImg");
+
+// state
 let state = {
   players: [],
   scores: [],
   turn: 0,
-  used: [],           // used words (original casing)
-  currentWord: null,  // original casing
+  deck: [],         // shuffled indices remaining
+  used: [],         // indices already used (for report)
+  currentIndex: null,
   revealed: false,
-  lockJudgement: true, // prevents double scoring
-  alwaysShow: false,
+  answeredLocked: true, // prevents double-scoring
   voiceURI: "",
+  rate: 1.0
 };
 
-const el = (id) => document.getElementById(id);
-
-const playerInput = el("playerInput");
-const btnAdd = el("btnAdd");
-const btnSpin = el("btnSpin");
-const btnAudio = el("btnAudio");
-const btnShow = el("btnShow");
-const btnCorrect = el("btnCorrect");
-const btnWrong = el("btnWrong");
-const btnNextPlayer = el("btnNextPlayer");
-const btnResetRound = el("btnResetRound");
-const btnResetScores = el("btnResetScores");
-const btnHardReset = el("btnHardReset");
-const btnSave = el("btnSave");
-
-const turnLabel = el("turnLabel");
-const pillRemaining = el("pillRemaining");
-const pillRound = el("pillRound");
-
-const wordImg = el("wordImg");
-const wordBig = el("wordBig");
-const hintReveal = el("hintReveal");
-const scoreList = el("scoreList");
-
-const spinOverlay = el("spinOverlay");
-const voiceSelect = el("voiceSelect");
-const togAlwaysShow = el("togAlwaysShow");
-
-/** ========= UTIL ========= **/
-function sanitizeKey(word){
-  // filenames are lowercased; spaces trimmed
-  return String(word).trim().toLowerCase();
-}
-function remainingCount(){
-  return Math.max(0, WORDS.length - state.used.length);
-}
-function roundNumber(){
-  return state.used.length + (state.currentWord ? 1 : 0);
-}
-
 function save(){
-  try{
-    localStorage.setItem(KEY, JSON.stringify(state));
-  }catch(e){}
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 function load(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return false;
   try{
-    const raw = localStorage.getItem(KEY);
-    if(raw){
-      const parsed = JSON.parse(raw);
-      if(parsed && Array.isArray(parsed.players)){
-        state = Object.assign(state, parsed);
-      }
-    }
-  }catch(e){}
+    const s = JSON.parse(raw);
+    // basic validation
+    if(!s || !Array.isArray(s.players)) return false;
+    state = {...state, ...s};
+    return true;
+  }catch(e){ return false; }
+}
+function hardReset(){
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+function newDeck(){
+  const idx = Array.from({length: WORDS.length}, (_,i)=>i);
+  return shuffle(idx);
 }
 
 function ensurePlayers(){
-  if(state.players.length === 0){
-    state.players = ["Aitana","Pedro"];
-    state.scores = [0,0];
-    state.turn = 0;
+  if(state.players.length>=2) return;
+  const n1 = (p1.value || "Player 1").trim();
+  const n2 = (p2.value || "Player 2").trim();
+  state.players = [n1, n2];
+  state.scores  = [0, 0];
+  state.turn = 0;
+}
+
+function setScreen(isGame){
+  if(isGame){
+    setupScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    panelTitle.textContent = "Game";
+  }else{
+    setupScreen.classList.remove("hidden");
+    gameScreen.classList.add("hidden");
+    panelTitle.textContent = "Setup";
   }
 }
 
-function setButtons(){
-  const hasPlayers = state.players.length >= 1;
-  btnSpin.disabled = !hasPlayers;
-  btnAudio.disabled = !hasPlayers || !state.currentWord;
-  btnShow.disabled = !hasPlayers || !state.currentWord;
-
-  // judgement allowed only once per word
-  btnCorrect.disabled = !hasPlayers || !state.currentWord || state.lockJudgement;
-  btnWrong.disabled   = !hasPlayers || !state.currentWord || state.lockJudgement;
-
-  btnNextPlayer.disabled = !hasPlayers;
-}
-
-function setWordUI(){
-  const name = state.players[state.turn] || "—";
-  turnLabel.textContent = `Turn: ${name}`;
-
-  pillRemaining.textContent = `Remaining: ${remainingCount()}`;
-  pillRound.textContent = `Round: ${Math.min(WORDS.length, state.used.length + (state.currentWord?1:0))} / ${WORDS.length}`;
-
-  // image
-  const w = state.currentWord;
-  if(!w){
-    wordImg.src = "img/placeholder.png";
-    wordBig.style.display = "none";
-    hintReveal.style.display = "block";
-    return;
-  }
-
-  const file = `img/${sanitizeKey(w)}.png`;
-  wordImg.src = file;
-  wordImg.onerror = () => { wordImg.src = "img/placeholder.png"; };
-
-  const showNow = state.alwaysShow || state.revealed;
-  wordBig.textContent = String(w).toUpperCase();
-  wordBig.style.display = showNow ? "block" : "none";
-  hintReveal.style.display = showNow ? "none" : "block";
-
-  setButtons();
-}
-
-function renderScores(){
-  scoreList.innerHTML = "";
-  state.players.forEach((p, i) => {
-    const row = document.createElement("div");
-    row.className = "playerRow";
-
+function renderScore(){
+  scoreBoard.innerHTML = "";
+  state.players.forEach((name, i)=>{
+    const el = document.createElement("div");
+    el.className = "playerCard";
     const left = document.createElement("div");
-    left.className = "playerName";
-    left.textContent = p;
-
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = "TURN";
-    if(i === state.turn) tag.style.display = "inline-block";
-    left.appendChild(tag);
-
-    const pts = document.createElement("div");
-    pts.className = "points";
-    pts.textContent = String(state.scores[i] ?? 0);
-
-    row.appendChild(left);
-    row.appendChild(pts);
-    scoreList.appendChild(row);
+    left.innerHTML = `<div class="playerName">${escapeHtml(name)}</div>
+      <div class="small">${i===state.turn ? '<span class="badge">TURN</span>' : ''}</div>`;
+    const right = document.createElement("div");
+    right.className = "playerMeta";
+    right.innerHTML = `<div class="points">${state.scores[i]||0}</div>`;
+    el.appendChild(left);
+    el.appendChild(right);
+    scoreBoard.appendChild(el);
   });
 }
 
-function nextTurn(){
-  if(state.players.length === 0) return;
-  state.turn = (state.turn + 1) % state.players.length;
-  state.revealed = false;
-  // keep same word; you control switching, but typical flow: you switch after judging
-  renderScores();
-  setWordUI();
-  save();
+function renderTopPills(){
+  pillTurn.textContent = `Turn: ${state.players[state.turn] ?? "—"}`;
+  pillRemain.textContent = `Remaining: ${state.deck.length}`;
+  pillRound.textContent = `Round: ${state.used.length} / ${WORDS.length}`;
 }
 
-/** ========= WORD PICKING (NO REPEATS) ========= **/
-function pickUnusedWord(){
-  const usedSet = new Set(state.used.map(w => sanitizeKey(w)));
-  // if currentWord exists, also consider it as used for picking purposes so it won't repeat in same round
-  if(state.currentWord) usedSet.add(sanitizeKey(state.currentWord));
-
-  const pool = WORDS.filter(w => !usedSet.has(sanitizeKey(w)));
-  if(pool.length === 0) return null;
-  const idx = Math.floor(Math.random() * pool.length);
-  return pool[idx];
+function setActive(){
+  activeName.textContent = state.players[state.turn] ?? "—";
+  renderScore();
+  renderTopPills();
 }
 
-/** ========= SPIN ANIMATION ========= **/
-async function spinWord(){
-  if(state.players.length === 0) return;
-
-  // if round ended:
-  if(state.used.length >= WORDS.length){
-    alert("Round finished! Reset Round to play again.");
-    return;
-  }
-
-  spinOverlay.style.display = "grid";
-  btnSpin.disabled = true;
-  btnAudio.disabled = true;
-  btnShow.disabled = true;
-  btnCorrect.disabled = true;
-  btnWrong.disabled = true;
-
-  await new Promise(r => setTimeout(r, 1300));
-
-  const w = pickUnusedWord();
-  spinOverlay.style.display = "none";
-
-  if(!w){
-    alert("No more unused words. Reset Round to play again.");
-    return;
-  }
-
-  state.currentWord = w;
+function setWordUI(index){
+  state.currentIndex = index;
   state.revealed = false;
-  state.lockJudgement = false; // allow exactly one judgement
-  setWordUI();
-  renderScores();
-  save();
+  state.answeredLocked = false;
 
-  // auto speak right after spin (optional)
+  wordText.textContent = "LISTEN…";
+  wordSub.textContent  = "Tap “SHOW WORD” only if you want to reveal it.";
+  btnReveal.textContent = "SHOW WORD";
+
+  // image by filename: img/<file>.png (lowercase filenames)
+  const file = WORDS[index].file.toLowerCase();
+  wordImg.src = `img/${file}.png`;
+  wordImg.alt = WORDS[index].display;
+
+  // if image missing, fallback placeholder
+  wordImg.onerror = ()=>{ wordImg.src = "img/placeholder.png"; };
+
+  setActive();
+}
+
+function speakCurrent(){
+  if(state.currentIndex==null) return;
+  const w = WORDS[state.currentIndex].display;
+
+  if(!("speechSynthesis" in window)){
+    alert("Speech is not supported in this browser.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(w);
+  u.lang = "en-US";
+  u.rate = Number(state.rate || 1.0);
+
+  const voices = window.speechSynthesis.getVoices();
+  const chosen = voices.find(v => v.voiceURI === state.voiceURI);
+  if(chosen) u.voice = chosen;
+
+  window.speechSynthesis.speak(u);
+}
+
+function nextWord(){
+  if(state.deck.length===0){
+    wordText.textContent = "ROUND COMPLETE!";
+    wordSub.textContent = "Tap “Reset Round” to play again.";
+    wordImg.src = "img/placeholder.png";
+    state.currentIndex = null;
+    state.answeredLocked = true;
+    save();
+    renderTopPills();
+    statusLine.textContent = "Round complete. Reset Round to reshuffle.";
+    return;
+  }
+  const index = state.deck.shift();   // no repeats
+  state.used.push(index);
+  setWordUI(index);
+  save();
+  // auto speak on spin
   speakCurrent();
 }
 
-/** ========= TTS ========= **/
-let voicesCache = [];
-function loadVoices(){
-  voicesCache = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+function reveal(){
+  if(state.currentIndex==null) return;
+  state.revealed = !state.revealed;
+  if(state.revealed){
+    wordText.textContent = WORDS[state.currentIndex].display.toUpperCase();
+    wordSub.textContent  = "Now decide: CORRECT or WRONG.";
+    btnReveal.textContent = "HIDE WORD";
+  }else{
+    wordText.textContent = "LISTEN…";
+    wordSub.textContent  = "Tap “SHOW WORD” only if you want to reveal it.";
+    btnReveal.textContent = "SHOW WORD";
+  }
+  save();
+}
+
+function lockAnswerButtons(lock){
+  state.answeredLocked = lock;
+  btnCorrect.disabled = lock;
+  btnWrong.disabled   = lock;
+}
+
+function markCorrect(){
+  if(state.currentIndex==null) return;
+  if(state.answeredLocked) return; // prevents double count
+  state.scores[state.turn] = (state.scores[state.turn]||0) + 1;
+  lockAnswerButtons(true);
+  save();
+  setActive();
+  statusLine.textContent = `${state.players[state.turn]} got it correct: ${WORDS[state.currentIndex].display}`;
+}
+
+function markWrong(){
+  if(state.currentIndex==null) return;
+  if(state.answeredLocked) return;
+  lockAnswerButtons(true);
+  save();
+  setActive();
+  statusLine.textContent = `${state.players[state.turn]} marked wrong: ${WORDS[state.currentIndex].display}`;
+}
+
+function nextPlayer(){
+  state.turn = (state.turn + 1) % state.players.length;
+  save();
+  setActive();
+}
+
+function resetScores(){
+  state.scores = state.players.map(()=>0);
+  save();
+  setActive();
+  statusLine.textContent = "Scores reset.";
+}
+
+function resetRound(){
+  state.deck = newDeck();
+  state.used = [];
+  state.currentIndex = null;
+  state.revealed = false;
+  state.answeredLocked = true;
+  save();
+  setActive();
+  wordText.textContent = "PRESS SPIN";
+  wordSub.textContent  = "No repeats until the round ends.";
+  wordImg.src = "img/placeholder.png";
+  statusLine.textContent = "Round reshuffled. Press SPIN.";
+}
+
+function endRoundReport(){
+  const usedWords = state.used.map(i=>WORDS[i].display);
+  const csv = ["order,word"].concat(usedWords.map((w,i)=>`${i+1},${w}`)).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `spelling_bee_report_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Voice loading
+function populateVoices(){
+  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
   voiceSelect.innerHTML = "";
+  if(!voices.length){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Voices will load after first interaction…";
+    voiceSelect.appendChild(opt);
+    return;
+  }
 
-  const preferred = voicesCache
-    .filter(v => /en/i.test(v.lang))
-    .sort((a,b) => {
-      const aGood = /Google US English|Samantha|Karen|Moira|Daniel|Microsoft/i.test(a.name) ? 0 : 1;
-      const bGood = /Google US English|Samantha|Karen|Moira|Daniel|Microsoft/i.test(b.name) ? 0 : 1;
-      return aGood - bGood;
-    });
+  // prefer en-US, then en-GB
+  const sorted = [...voices].sort((a,b)=>{
+    const aScore = scoreVoice(a);
+    const bScore = scoreVoice(b);
+    return bScore - aScore;
+  });
 
-  const list = preferred.length ? preferred : voicesCache;
-
-  list.forEach(v => {
+  sorted.forEach(v=>{
     const opt = document.createElement("option");
     opt.value = v.voiceURI;
     opt.textContent = `${v.name} (${v.lang})`;
     voiceSelect.appendChild(opt);
   });
 
-  // restore selection
-  if(state.voiceURI){
-    voiceSelect.value = state.voiceURI;
+  // auto select best or saved
+  const saved = state.voiceURI;
+  if(saved && sorted.some(v=>v.voiceURI===saved)){
+    voiceSelect.value = saved;
   }else{
-    // choose best "en" if possible
-    const best = preferred[0] || list[0];
-    if(best){
-      voiceSelect.value = best.voiceURI;
-      state.voiceURI = best.voiceURI;
-    }
+    voiceSelect.value = sorted[0].voiceURI;
+    state.voiceURI = sorted[0].voiceURI;
+    save();
   }
 }
+function scoreVoice(v){
+  let s = 0;
+  const lang = (v.lang||"").toLowerCase();
+  const name = (v.name||"").toLowerCase();
 
-function speak(text){
-  if(!window.speechSynthesis) return;
+  if(lang.startsWith("en-us")) s += 100;
+  if(lang.startsWith("en-gb")) s += 70;
+  if(lang.startsWith("en")) s += 40;
 
-  // cancel previous
-  speechSynthesis.cancel();
+  // “Google” voices on many devices are good
+  if(name.includes("google")) s += 25;
+  if(name.includes("siri")) s += 15;
+  if(name.includes("enhanced")) s += 10;
 
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  u.rate = 0.92;
-  u.pitch = 1.0;
-
-  const v = voicesCache.find(x => x.voiceURI === state.voiceURI);
-  if(v) u.voice = v;
-
-  speechSynthesis.speak(u);
+  // prefer not "compact"
+  if(name.includes("compact")) s -= 10;
+  return s;
 }
 
-function speakCurrent(){
-  if(!state.currentWord) return;
-  // Speak the word clearly. (We keep it as-is; capitalized words still read fine.)
-  speak(state.currentWord);
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, (c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 }
 
-/** ========= JUDGEMENT (LOCKED TO ONE TAP) ========= **/
-function markCorrect(){
-  if(state.lockJudgement || !state.currentWord) return;
-
-  state.lockJudgement = true;
-  // count score once
-  state.scores[state.turn] = (state.scores[state.turn] || 0) + 1;
-
-  // move current word into used so it can’t repeat this round
-  state.used.push(state.currentWord);
-
-  // keep currentWord on screen until next spin (optional)
-  // reveal it automatically after judgement for feedback:
-  state.revealed = true;
-
-  renderScores();
-  setWordUI();
-  save();
-}
-
-function markWrong(){
-  if(state.lockJudgement || !state.currentWord) return;
-
-  state.lockJudgement = true;
-
-  // still consume the word (so no repeats). This matches “no repeats in a round”.
-  state.used.push(state.currentWord);
-
-  state.revealed = true;
-
-  renderScores();
-  setWordUI();
-  save();
-}
-
-/** ========= SHOW/HIDE ========= **/
-function toggleShow(){
-  if(!state.currentWord) return;
-  state.revealed = !state.revealed;
-  setWordUI();
-  save();
-}
-
-/** ========= RESET ========= **/
-function resetRound(){
-  // keep players + scores, clear word progression
-  state.used = [];
-  state.currentWord = null;
-  state.revealed = false;
-  state.lockJudgement = true;
-  setWordUI();
-  renderScores();
-  save();
-}
-
-function resetScores(){
-  state.scores = state.players.map(_ => 0);
-  renderScores();
-  save();
-}
-
-function hardReset(){
-  if(!confirm("Hard reset will clear players, scores, and round. Continue?")) return;
-  state = {
-    players: [],
-    scores: [],
-    turn: 0,
-    used: [],
-    currentWord: null,
-    revealed: false,
-    lockJudgement: true,
-    alwaysShow: false,
-    voiceURI: state.voiceURI || ""
-  };
+// events
+btnStart.addEventListener("click", ()=>{
   ensurePlayers();
-  renderScores();
-  setWordUI();
-  save();
-}
-
-/** ========= PLAYERS ========= **/
-function addPlayer(){
-  const name = (playerInput.value || "").trim();
-  if(!name) return;
-
-  state.players.push(name);
-  state.scores.push(0);
-  playerInput.value = "";
-
-  if(state.players.length === 1){
-    state.turn = 0;
+  if(!state.deck || !state.deck.length){
+    state.deck = newDeck();
+    state.used = [];
   }
-
-  renderScores();
-  setWordUI();
-  save();
-}
-
-/** ========= SETTINGS ========= **/
-function applySettingsFromUI(){
-  state.alwaysShow = !!togAlwaysShow.checked;
   state.voiceURI = voiceSelect.value || state.voiceURI;
-  setWordUI();
+  state.rate = Number(rateSelect.value || 1.0);
   save();
-}
 
-/** ========= INIT ========= **/
-function init(){
-  load();
-  ensurePlayers();
+  setScreen(true);
+  setActive();
+  lockAnswerButtons(true);
+  statusLine.textContent = "Ready. Press SPIN.";
+});
 
-  togAlwaysShow.checked = !!state.alwaysShow;
+btnSpin.addEventListener("click", ()=>{
+  btnSpin.classList.add("spinning");
+  setTimeout(()=>btnSpin.classList.remove("spinning"), 650);
 
-  renderScores();
-  setWordUI();
-  setButtons();
+  lockAnswerButtons(false);
+  nextWord();
+});
 
-  btnAdd.addEventListener("click", addPlayer);
-  btnSpin.addEventListener("click", spinWord);
-  btnAudio.addEventListener("click", speakCurrent);
-  btnShow.addEventListener("click", toggleShow);
-  btnCorrect.addEventListener("click", markCorrect);
-  btnWrong.addEventListener("click", markWrong);
-  btnNextPlayer.addEventListener("click", nextTurn);
+btnSpeak.addEventListener("click", ()=>{
+  speakCurrent();
+});
 
-  btnResetRound.addEventListener("click", resetRound);
-  btnResetScores.addEventListener("click", resetScores);
-  btnHardReset.addEventListener("click", hardReset);
-  btnSave.addEventListener("click", applySettingsFromUI);
+btnReveal.addEventListener("click", ()=>{
+  reveal();
+});
 
-  togAlwaysShow.addEventListener("change", applySettingsFromUI);
-  voiceSelect.addEventListener("change", applySettingsFromUI);
+btnCorrect.addEventListener("click", ()=>{
+  markCorrect();
+});
+btnWrong.addEventListener("click", ()=>{
+  markWrong();
+});
 
-  // voices load async
-  if(window.speechSynthesis){
-    loadVoices();
-    speechSynthesis.onvoiceschanged = () => loadVoices();
+btnNextPlayer.addEventListener("click", ()=>{
+  nextPlayer();
+});
+
+btnEndRound.addEventListener("click", ()=>{
+  endRoundReport();
+});
+
+btnResetScores.addEventListener("click", ()=>{
+  resetScores();
+});
+
+btnResetRound.addEventListener("click", ()=>{
+  resetRound();
+});
+
+btnResetAll.addEventListener("click", ()=>{
+  if(confirm("Hard reset will delete saved progress. Continue?")){
+    hardReset();
   }
-  save();
-}
+});
 
-init();
+voiceSelect.addEventListener("change", ()=>{
+  state.voiceURI = voiceSelect.value;
+  save();
+});
+rateSelect.addEventListener("change", ()=>{
+  state.rate = Number(rateSelect.value || 1.0);
+  save();
+});
+
+// init
+(function init(){
+  load();
+
+  // If images folder doesn't have placeholder.png, add it as img/placeholder.png
+  // Your current placeholder should be: img/placeholder.png
+
+  // Voice list events
+  if("speechSynthesis" in window){
+    populateVoices();
+    window.speechSynthesis.onvoiceschanged = populateVoices;
+  }else{
+    voiceSelect.innerHTML = `<option value="">Speech not supported</option>`;
+  }
+
+  // restore UI
+  if(state.players && state.players.length){
+    p1.value = state.players[0] || "";
+    p2.value = state.players[1] || "";
+  }
+  if(state.rate) rateSelect.value = String(state.rate);
+
+  // if game already started before (saved), go to game screen
+  if(state.players && state.players.length>=2 && (state.deck?.length || state.used?.length)){
+    setScreen(true);
+    setActive();
+    lockAnswerButtons(state.answeredLocked ?? true);
+
+    // restore current word UI
+    if(state.currentIndex!=null){
+      // rebuild UI based on currentIndex
+      setWordUI(state.currentIndex);
+      // restore reveal state
+      if(state.revealed){
+        state.revealed = false;
+        reveal();
+      }
+      lockAnswerButtons(state.answeredLocked ?? true);
+    }else{
+      wordText.textContent = "PRESS SPIN";
+      wordSub.textContent  = "No repeats until the round ends.";
+      wordImg.src = "img/placeholder.png";
+    }
+    statusLine.textContent = "Loaded saved progress.";
+  }else{
+    setScreen(false);
+    statusLine.textContent = "Add players and press START.";
+  }
+})();
 </script>
 </body>
 </html>
