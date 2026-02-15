@@ -1,12 +1,105 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SpellingBee Test</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spelling Bee Contest Pro</title>
+
+<style>
+body{
+font-family: system-ui;
+background:#fff7e6;
+text-align:center;
+padding:20px;
+}
+
+button{
+font-size:20px;
+padding:15px 25px;
+margin:10px;
+border-radius:10px;
+border:none;
+background:#ff9900;
+color:white;
+}
+
+.word{
+font-size:40px;
+margin:20px;
+}
+
+.player{
+font-size:20px;
+margin:5px;
+}
+</style>
+
 </head>
+
 <body>
-  <h1>✅ GitHub Pages ya funciona</h1>
-  <p>Si ves esto, ya detectó index.html.</p>
+
+<h1>🐝 Spelling Bee Contest Pro</h1>
+
+<div id="players"></div>
+
+<button onclick="addPlayer()">Add Player</button>
+<button onclick="nextWord()">Next Word</button>
+<button onclick="correct()">Correct</button>
+<button onclick="wrong()">Wrong</button>
+
+<div class="word" id="word">Press Next Word</div>
+
+<script>
+
+let words = [
+"apple","banana","circle","dragon","earth",
+"flower","green","house","island","jungle"
+];
+
+let players = [];
+let scores = [];
+let turn = 0;
+let currentWord = "";
+
+function addPlayer(){
+let name = prompt("Player name:");
+players.push(name);
+scores.push(0);
+updatePlayers();
+}
+
+function updatePlayers(){
+let html="";
+for(let i=0;i<players.length;i++){
+html += "<div class='player'>" + players[i] + ": " + scores[i] + "</div>";
+}
+document.getElementById("players").innerHTML=html;
+}
+
+function nextWord(){
+
+currentWord = words[Math.floor(Math.random()*words.length)];
+
+document.getElementById("word").innerText = currentWord;
+
+let msg = new SpeechSynthesisUtterance(currentWord);
+speechSynthesis.speak(msg);
+
+}
+
+function correct(){
+scores[turn]++;
+turn++;
+if(turn>=players.length)turn=0;
+updatePlayers();
+}
+
+function wrong(){
+turn++;
+if(turn>=players.length)turn=0;
+}
+
+</script>
+
 </body>
 </html>
