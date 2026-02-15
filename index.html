@@ -7,38 +7,46 @@
 
 <style>
 body{
-font-family: system-ui;
-background:#fff7e6;
-text-align:center;
-padding:20px;
+    font-family: system-ui, Arial;
+    background:#fff7e6;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    color:#333;
 }
 
 button{
-font-size:20px;
-padding:15px 25px;
-margin:10px;
-border-radius:10px;
-border:none;
-background:#ff9900;
-color:white;
+    font-size:20px;
+    padding:15px 25px;
+    margin:10px;
+    border-radius:10px;
+    border:none;
+    background:#ff9900;
+    color:white;
 }
 
-.word{
-font-size:40px;
-margin:20px;
+button:active{
+    transform:scale(0.95);
+}
+
+#word{
+    font-size:40px;
+    margin:20px;
+    font-weight:bold;
 }
 
 .player{
-font-size:20px;
-margin:5px;
+    font-size:20px;
+    margin:5px;
 }
 </style>
-
 </head>
 
 <body>
 
-<h1>🐝 Spelling Bee Contest Pro</h1>
+<h1>🐝 Spelling Bee Contest</h1>
 
 <div id="players"></div>
 
@@ -47,13 +55,16 @@ margin:5px;
 <button onclick="correct()">Correct</button>
 <button onclick="wrong()">Wrong</button>
 
-<div class="word" id="word">Press Next Word</div>
+<div id="word">Press Next Word</div>
 
 <script>
 
 let words = [
-"apple","banana","circle","dragon","earth",
-"flower","green","house","island","jungle"
+"apple","banana","cat","dog","elephant",
+"flower","grape","house","island","jungle",
+"kitten","lemon","monkey","notebook","orange",
+"pencil","queen","rainbow","sunshine","tiger",
+"umbrella","violin","window","xylophone","yellow","zebra"
 ];
 
 let players = [];
@@ -62,18 +73,31 @@ let turn = 0;
 let currentWord = "";
 
 function addPlayer(){
+
 let name = prompt("Player name:");
+
+if(name){
 players.push(name);
 scores.push(0);
 updatePlayers();
 }
 
-function updatePlayers(){
-let html="";
-for(let i=0;i<players.length;i++){
-html += "<div class='player'>" + players[i] + ": " + scores[i] + "</div>";
 }
-document.getElementById("players").innerHTML=html;
+
+function updatePlayers(){
+
+let html="";
+
+for(let i=0;i<players.length;i++){
+
+let arrow = (i==turn) ? "👉 " : "";
+
+html += "<div class='player'>" + arrow + players[i] + ": " + scores[i] + "</div>";
+
+}
+
+document.getElementById("players").innerHTML = html;
+
 }
 
 function nextWord(){
@@ -83,20 +107,31 @@ currentWord = words[Math.floor(Math.random()*words.length)];
 document.getElementById("word").innerText = currentWord;
 
 let msg = new SpeechSynthesisUtterance(currentWord);
+
 speechSynthesis.speak(msg);
 
 }
 
 function correct(){
+
 scores[turn]++;
+
 turn++;
-if(turn>=players.length)turn=0;
+
+if(turn>=players.length) turn=0;
+
 updatePlayers();
+
 }
 
 function wrong(){
+
 turn++;
-if(turn>=players.length)turn=0;
+
+if(turn>=players.length) turn=0;
+
+updatePlayers();
+
 }
 
 </script>
