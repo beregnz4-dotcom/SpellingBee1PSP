@@ -1,522 +1,213 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Spelling Bee Contest Pro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spelling Bee Contest</title>
 
 <style>
-  :root{
-    --bg1:#fff2cf;
-    --bg2:#f6d78e;
-    --card:#ffffff;
-    --ink:#2b2b2b;
-    --muted:#6b6b6b;
-    --accent:#f59e0b;
-    --accent2:#d97706;
-    --danger:#ef4444;
-    --ok:#22c55e;
-    --shadow: 0 18px 40px rgba(0,0,0,.18);
-    --radius: 22px;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    color:var(--ink);
-    background: radial-gradient(1200px 700px at 50% -100px, var(--bg1), var(--bg2));
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:22px;
-  }
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:linear-gradient(180deg,#fff8dc,#ffe680);
+text-align:center;
+margin:0;
+padding:20px;
+}
 
-  .shell{
-    width:min(560px, 100%);
-  }
+h1{
+color:#b8860b;
+}
 
-  .card{
-    background:var(--card);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    border: 1px solid rgba(0,0,0,.06);
-  }
+#word{
+font-size:48px;
+font-weight:bold;
+margin:20px;
+}
 
-  header{
-    padding:18px 18px 14px;
-    background:
-      linear-gradient(180deg, rgba(245,158,11,.25), rgba(245,158,11,.08)),
-      url('') no-repeat;
-    border-bottom:1px solid rgba(0,0,0,.06);
-  }
+button{
+font-size:18px;
+padding:12px 20px;
+margin:5px;
+border-radius:10px;
+border:none;
+background:#ffd54f;
+}
 
-  .title{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    justify-content:center;
-    margin:0;
-    font-weight:900;
-    letter-spacing:.2px;
-    color:#7a4b00;
-  }
-  .bee{
-    width:30px;height:30px;
-    display:inline-grid;
-    place-items:center;
-    border-radius:10px;
-    background:rgba(245,158,11,.25);
-  }
+button:active{
+transform:scale(0.95);
+}
 
-  .sub{
-    margin:8px 0 0;
-    text-align:center;
-    color:var(--muted);
-    font-size:14px;
-  }
+.active{
+outline:4px solid green;
+}
 
-  .content{ padding:18px; }
-
-  .row{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    justify-content:center;
-    align-items:center;
-    margin-bottom:12px;
-  }
-
-  input{
-    flex: 1 1 220px;
-    padding:12px 14px;
-    font-size:16px;
-    border-radius:14px;
-    border:1px solid rgba(0,0,0,.15);
-    outline:none;
-  }
-  input:focus{ border-color: rgba(245,158,11,.8); box-shadow:0 0 0 3px rgba(245,158,11,.22); }
-
-  .btn{
-    padding:12px 16px;
-    font-size:16px;
-    border:none;
-    border-radius:16px;
-    cursor:pointer;
-    background:var(--accent);
-    color:white;
-    font-weight:800;
-    box-shadow: 0 8px 18px rgba(245,158,11,.25);
-  }
-  .btn:hover{ background:var(--accent2); }
-  .btn:active{ transform: translateY(1px); }
-
-  .btn.secondary{
-    background:#111827;
-    box-shadow: 0 8px 18px rgba(17,24,39,.18);
-  }
-  .btn.secondary:hover{ background:#0b1220; }
-
-  .btn.ghost{
-    background: transparent;
-    color: #111827;
-    border: 1px solid rgba(0,0,0,.15);
-    box-shadow:none;
-  }
-  .btn.ghost:hover{ border-color: rgba(0,0,0,.25); background: rgba(0,0,0,.03); }
-
-  .btn.ok{ background:var(--ok); box-shadow:0 8px 18px rgba(34,197,94,.22); }
-  .btn.ok:hover{ background:#16a34a; }
-  .btn.bad{ background:var(--danger); box-shadow:0 8px 18px rgba(239,68,68,.20); }
-  .btn.bad:hover{ background:#dc2626; }
-
-  .panel{
-    margin-top:14px;
-    border:1px solid rgba(0,0,0,.08);
-    border-radius:18px;
-    padding:14px;
-    background: linear-gradient(180deg, rgba(245,158,11,.08), rgba(245,158,11,.03));
-  }
-
-  .meta{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-    color:var(--muted);
-    font-size:14px;
-    margin-bottom:8px;
-  }
-
-  .turn{
-    font-size:18px;
-    font-weight:900;
-    margin:6px 0 0;
-    text-align:center;
-  }
-
-  .listen{
-    margin:12px 0 10px;
-    font-size:44px;
-    font-weight:1000;
-    letter-spacing:.6px;
-    color:#ff6a00;
-    text-align:center;
-  }
-
-  .hint{
-    text-align:center;
-    font-size:14px;
-    color:var(--muted);
-    margin-top:-6px;
-  }
-
-  .score{
-    margin-top:14px;
-    text-align:left;
-    background:white;
-    border-radius:16px;
-    padding:12px 12px 10px;
-    border:1px solid rgba(0,0,0,.08);
-  }
-  .score h3{
-    margin:0 0 8px;
-    font-size:14px;
-    color:#7a4b00;
-    letter-spacing:.3px;
-  }
-  .score .line{
-    display:flex;
-    justify-content:space-between;
-    padding:8px 10px;
-    border-radius:12px;
-  }
-  .score .line:nth-child(even){ background: rgba(0,0,0,.03); }
-  .pill{
-    padding:3px 10px;
-    border-radius:999px;
-    font-weight:900;
-    color:white;
-    background:#111827;
-    font-size:14px;
-  }
-  .pill.turn{ background: var(--accent); color:white; }
-
-  footer{
-    padding:12px 18px 16px;
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    flex-wrap:wrap;
-    border-top:1px solid rgba(0,0,0,.06);
-    background: rgba(255,255,255,.6);
-  }
-
-  .small{
-    font-size:12px;
-    color:var(--muted);
-    text-align:center;
-    margin-top:10px;
-  }
+.score{
+font-size:22px;
+margin:10px;
+}
 </style>
+
 </head>
-
 <body>
-<div class="shell">
-  <div class="card">
-    <header>
-      <h1 class="title">
-        <span class="bee">🐝</span>
-        Spelling Bee Contest
-      </h1>
-      <p class="sub">No repeats until the round ends • You control the turn</p>
-    </header>
 
-    <div class="content">
+<h1>Spelling Bee Contest</h1>
 
-      <div class="row">
-        <input id="playerInput" placeholder="Player name (Aitana, Pedro…)"/>
-        <button class="btn" onclick="addPlayer()">Add Player</button>
-      </div>
-
-      <div class="panel">
-        <div class="meta">
-          <div id="remaining">Remaining: —</div>
-          <div id="round">Round: 0 / 337</div>
-        </div>
-
-        <div class="turn" id="turn">Turn: —</div>
-
-        <div class="listen" id="listen">Press Next Word</div>
-        <div class="hint" id="hint">Tip: “Next Word” speaks it. “Show Word” reveals it.</div>
-
-        <div class="row" style="margin-top:10px;">
-          <button class="btn" onclick="nextWord()">Next Word</button>
-          <button class="btn ghost" onclick="repeatWord()">Repeat</button>
-          <button class="btn ghost" onclick="showWord()">Show Word</button>
-        </div>
-
-        <div class="row">
-          <button class="btn ok" onclick="markCorrect()">Correct</button>
-          <button class="btn bad" onclick="markWrong()">Wrong</button>
-          <button class="btn secondary" onclick="nextTurn()">Next Player</button>
-        </div>
-
-        <div class="score" id="score">
-          <h3>SCORE</h3>
-          <div class="small">Add players to start.</div>
-        </div>
-      </div>
-
-      <div class="small">
-        iPhone tip: if it doesn’t speak, tap “Next Word” again (Safari sometimes needs a user action).
-      </div>
-
-    </div>
-
-    <footer>
-      <button class="btn ghost" onclick="resetRound()">Reset Round</button>
-      <button class="btn ghost" onclick="resetScores()">Reset Scores</button>
-      <button class="btn ghost" onclick="hardReset()">Hard Reset (All)</button>
-    </footer>
-  </div>
+<div>
+<input id="player1" placeholder="Player 1" value="Player 1">
+<input id="player2" placeholder="Player 2" value="Player 2">
 </div>
 
+<div class="score" id="score1">Player 1: 0</div>
+<div class="score" id="score2">Player 2: 0</div>
+
+<div id="word">Press SPIN</div>
+
+<button onclick="spin()">SPIN</button>
+<button onclick="playAudio()">PLAY AUDIO</button>
+<button onclick="correct()">CORRECT</button>
+<button onclick="incorrect()">INCORRECT</button>
+<button onclick="nextPlayer()">NEXT PLAYER</button>
+<button onclick="reset()">RESET</button>
+
 <script>
-  // ---- Words (337) ----
-  const words = [
-    "about","action","address","alike","animal","around","attic","away",
-    "baby","bake","balloons","banana","begin","behind","below","birthday",
-    "boat","brother","bubbles","bunny","cannot","change","chart","cherry",
-    "child","choose","circle","commas","cream","cry","cube","danger","date",
-    "detail","different","does","down","dragon","draw","drink","drive",
-    "duck","each","earth","easy","eat","echo","eight","elbow","English",
-    "shade","share","shows","simple","sizes","skate","skunk","sleep",
-    "small","smile","smooth","snack","snake","soapy","soil","solids",
-    "sound","vowel","evaporate","family","farmer","farther","fast","feet",
-    "fence","find","flower","freeze","friend","frog","front","funny","game",
-    "giant","gift","giggle","globe","goat","good","goose","great","green",
-    "grin","ground","group","guess","gym","habitat","hair","half","hamster",
-    "happen","happy","head","heard","held","here","hide","hobby","honey",
-    "hop","horse","hour","huge","hurt","hut","ice","ideas","tablet","tack",
-    "tactic","taffy","tailor","talent","tame","target","tasty","temple",
-    "tempo","tennis","tense","tepee","thigh","think","thirst","wage",
-    "igloo","inch","insects","inside","iron","itch","jail","jam","jelly",
-    "join","joke","jolly","judge","juggle","July","jungle","junk","keep",
-    "kettle","key","kick","kinds","kiss","kite","kitten","knife","lakes",
-    "lamb","lamp","land","laugh","lazy","lemon","letter","library","life",
-    "lift","lime","line","liquid","listen","liter","little","loud","love",
-    "lunch","machine","magic","magnet","umpire","unable","uncle","under",
-    "until","vague","vain","valor","value","vapor","vast","verbs","vest",
-    "vibrate","visit","voice","wagon","make","many","meal","might","Monday",
-    "money","monkey","mother","motor","mouse","mouth","move","much","music",
-    "near","neat","neck","needle","never","next","nickel","night","nine",
-    "noise","none","north","nose","notice","noun","number","oak","object",
-    "ocean","offer","office","once","one","onion","only","order","other",
-    "ounce","outside","oval","oven","over","owe","owl","page","pain","walk",
-    "warn","water","were","wheel","with","won","story","stove","summer",
-    "Sunday","suppose","sure","table","speak","special","stamp","store",
-    "paint","pair","palace","palm","paper","patch","peace","peach","peanut",
-    "pencil","penny","people","pepper","perfect","person","phone","pickles",
-    "picture","piece","pile","pilot","pine","places","plate","play","pretty",
-    "prize","puppet","puppy","purple","push","quart","queen","quiet","radio",
-    "raft","raise","rang","read","ready","really","repeat","return","reuse",
-    "rhyme","riddle","robot","sense","sentence","word","would","write",
-    "writer","year","your","time","tomorrow","tooth","town","tree","turtle",
-    "ugly","thirty","thorn","throb","throw","wait"
-  ];
 
-  // ---- State ----
-  let players = [];
-  let scores  = [];
-  let turn = 0;
+const words = [
+"about","action","address","alike","animal","around","attic","away","baby","bake",
+"balloons","banana","begin","behind","below","birthday","boat","brother","bubbles","bunny",
+"cannot","change","chart","cherry","child","choose","circle","commas","cream","cry",
+"cube","danger","date","detail","different","does","down","dragon","draw","drink",
+"drive","duck","each","earth","easy","eat","echo","eight","elbow","English",
+"shade","share","shows","simple","sizes","skate","skunk","sleep","small","smile",
+"smooth","snack","snake","soapy","soil","solids","sound","vowel","evaporate","family",
+"farmer","farther","fast","feet","fence","find","flower","freeze","friend","frog",
+"front","funny","game","giant","gift","giggle","globe","goat","good","goose",
+"great","green","grin","ground","group","guess","gym","habitat","hair","half",
+"hamster","happen","happy","head","heard","held","here","hide","hobby","honey",
+"hop","horse","hour","huge","hurt","hut","ice","ideas","tablet","tack",
+"tactic","taffy","tailor","talent","tame","target","tasty","temple","tempo","tennis",
+"tense","tepee","thigh","think","thirst","wage","igloo","inch","insects","inside",
+"iron","itch","jail","jam","jelly","join","joke","jolly","judge","juggle",
+"July","jungle","junk","keep","kettle","key","kick","kinds","kiss","kite",
+"kitten","knife","lakes","lamb","lamp","land","laugh","lazy","lemon","letter",
+"library","life","lift","lime","line","liquid","listen","liter","little","loud",
+"love","lunch","machine","magic","magnet","umpire","unable","uncle","under","until",
+"vague","vain","valor","value","vapor","vast","verbs","vest","vibrate","visit",
+"voice","wagon","make","many","meal","might","Monday","money","monkey","mother",
+"motor","mouse","mouth","move","much","music","near","neat","neck","needle",
+"never","next","nickel","night","nine","noise","none","north","nose","notice",
+"noun","number","oak","object","ocean","offer","office","once","one","onion",
+"only","order","other","ounce","outside","oval","oven","over","owe","owl",
+"page","pain","walk","warn","water","were","wheel","with","won","story",
+"stove","summer","Sunday","suppose","sure","table","speak","special","stamp","store",
+"paint","pair","palace","palm","paper","patch","peace","peach","peanut","pencil",
+"penny","people","pepper","perfect","person","phone","pickles","picture","piece","pile",
+"pilot","pine","places","plate","play","pretty","prize","puppet","puppy","purple",
+"push","quart","queen","quiet","radio","raft","raise","rang","read","ready",
+"really","repeat","return","reuse","rhyme","riddle","robot","sense","sentence","word",
+"would","write","writer","year","your","time","tomorrow","tooth","town","tree",
+"turtle","ugly","thirty","thorn","throb","throw","wait"
+];
 
-  let unused = [...words];
-  let currentWord = "";
-  let revealed = false;
-  let spokenOnce = false;
+let used=[];
+let currentWord="";
+let currentPlayer=1;
+let scores=[0,0];
+let answered=false;
 
-  // ---- UI helpers ----
-  const elTurn = document.getElementById("turn");
-  const elListen = document.getElementById("listen");
-  const elHint = document.getElementById("hint");
-  const elScore = document.getElementById("score");
-  const elRemaining = document.getElementById("remaining");
-  const elRound = document.getElementById("round");
+function spin(){
 
-  function updateMeta(){
-    elRemaining.textContent = "Remaining: " + unused.length;
-    elRound.textContent = "Round: " + (words.length - unused.length) + " / " + words.length;
-  }
+if(used.length===words.length){
+alert("All words used");
+return;
+}
 
-  function updateTurn(){
-    if(players.length===0){
-      elTurn.textContent = "Turn: —";
-      return;
-    }
-    elTurn.textContent = "Turn: " + players[turn];
-    updateScore();
-  }
+answered=false;
 
-  function updateScore(){
-    if(players.length===0){
-      elScore.innerHTML = `<h3>SCORE</h3><div class="small">Add players to start.</div>`;
-      return;
-    }
-    let html = `<h3>SCORE</h3>`;
-    for(let i=0;i<players.length;i++){
-      const isTurn = (i===turn);
-      html += `
-        <div class="line">
-          <div><strong>${players[i]}</strong> ${isTurn ? `<span class="pill turn">TURN</span>` : ""}</div>
-          <div class="pill">${scores[i]}</div>
-        </div>
-      `;
-    }
-    elScore.innerHTML = html;
-  }
+let index;
+do{
+index=Math.floor(Math.random()*words.length);
+}while(used.includes(index));
 
-  // ---- Sound (no internet) ----
-  let audioCtx;
-  function beep(freq, ms){
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.frequency.value = freq;
-      o.connect(g); g.connect(audioCtx.destination);
-      g.gain.value = 0.08;
-      o.start();
-      setTimeout(()=>{ o.stop(); }, ms);
-    }catch(e){}
-  }
-  function soundCorrect(){ beep(880, 120); setTimeout(()=>beep(1175, 140), 130); }
-  function soundWrong(){ beep(220, 180); setTimeout(()=>beep(180, 220), 190); }
+used.push(index);
 
-  // ---- Speech ----
-  function speak(word){
-    if(!word) return;
-    try{
-      const msg = new SpeechSynthesisUtterance(word);
-      msg.lang = "en-US";
-      msg.rate = 0.65;   // clearer for kids
-      msg.pitch = 1.0;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(msg);
-      spokenOnce = true;
-    }catch(e){}
-  }
+currentWord=words[index];
 
-  // ---- Actions ----
-  function addPlayer(){
-    const input = document.getElementById("playerInput");
-    const name = (input.value || "").trim();
-    if(!name) return;
+document.getElementById("word").innerText=currentWord;
 
-    players.push(name);
-    scores.push(0);
-    input.value = "";
+}
 
-    if(players.length===1) turn = 0;
-    updateTurn();
-    updateMeta();
-  }
+function playAudio(){
 
-  function nextWord(){
-    if(players.length===0){
-      alert("Add at least 1 player.");
-      return;
-    }
+speechSynthesis.cancel();
 
-    if(unused.length===0){
-      alert("Round finished! Reset Round to start again.");
-      elListen.textContent = "Round Finished ✅";
-      elHint.textContent = "Tap Reset Round to play again.";
-      return;
-    }
+let u=new SpeechSynthesisUtterance(currentWord);
+u.lang="en-US";
+u.rate=0.65;
+speechSynthesis.speak(u);
 
-    const idx = Math.floor(Math.random() * unused.length);
-    currentWord = unused[idx];
-    unused.splice(idx, 1);
+}
 
-    revealed = false;
-    elListen.textContent = "Listen…";
-    elHint.textContent = "Tap Show Word only if you want to reveal it.";
-    speak(currentWord);
+function correct(){
 
-    updateMeta();
-    updateTurn();
-  }
+if(answered)return;
 
-  function repeatWord(){
-    if(!currentWord){
-      alert("Press Next Word first.");
-      return;
-    }
-    speak(currentWord);
-  }
+answered=true;
 
-  function showWord(){
-    if(!currentWord){
-      alert("Press Next Word first.");
-      return;
-    }
-    revealed = true;
-    elListen.textContent = currentWord;
-    elHint.textContent = "Word revealed. You can still Repeat it.";
-  }
+scores[currentPlayer-1]++;
 
-  function markCorrect(){
-    if(players.length===0) return;
-    scores[turn] = (scores[turn] || 0) + 1;
-    soundCorrect();
-    updateScore();
-  }
+updateScore();
 
-  function markWrong(){
-    if(players.length===0) return;
-    soundWrong();
-    updateScore();
-  }
+}
 
-  // Manual turn change (ONLY with this button)
-  function nextTurn(){
-    if(players.length===0) return;
-    turn++;
-    if(turn >= players.length) turn = 0;
-    updateTurn();
-  }
+function incorrect(){
 
-  function resetRound(){
-    unused = [...words];
-    currentWord = "";
-    revealed = false;
-    spokenOnce = false;
-    elListen.textContent = "Press Next Word";
-    elHint.textContent = "Tip: “Next Word” speaks it. “Show Word” reveals it.";
-    updateMeta();
-    updateTurn();
-  }
+if(answered)return;
 
-  function resetScores(){
-    scores = scores.map(()=>0);
-    updateScore();
-  }
+answered=true;
 
-  function hardReset(){
-    players = [];
-    scores = [];
-    turn = 0;
-    resetRound();
-    updateScore();
-  }
+updateScore();
 
-  // init
-  updateMeta();
-  updateTurn();
-  updateScore();
+}
+
+function nextPlayer(){
+
+currentPlayer=currentPlayer===1?2:1;
+
+highlight();
+
+}
+
+function updateScore(){
+
+document.getElementById("score1").innerText=
+document.getElementById("player1").value+": "+scores[0];
+
+document.getElementById("score2").innerText=
+document.getElementById("player2").value+": "+scores[1];
+
+}
+
+function highlight(){
+
+document.getElementById("score1").classList.remove("active");
+document.getElementById("score2").classList.remove("active");
+
+document.getElementById("score"+currentPlayer).classList.add("active");
+
+}
+
+function reset(){
+
+scores=[0,0];
+used=[];
+updateScore();
+document.getElementById("word").innerText="Press SPIN";
+
+}
+
+highlight();
 
 </script>
+
 </body>
 </html>
