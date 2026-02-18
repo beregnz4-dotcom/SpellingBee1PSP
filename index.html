@@ -14,7 +14,6 @@
       --shadow: 0 18px 40px rgba(0,0,0,.12);
       --shadow2: 0 10px 18px rgba(0,0,0,.12);
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -27,8 +26,7 @@
       min-height:100vh;
       padding: 18px 14px 40px;
     }
-
-    .wrap{ max-width: 820px; margin: 0 auto; }
+    .wrap{ max-width: 860px; margin: 0 auto; }
 
     .header{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -61,12 +59,7 @@
       cursor:pointer;
     }
 
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-    }
+    .grid{ margin-top:14px; display:grid; grid-template-columns: 1fr; gap:14px; }
 
     .panel{
       border-radius: var(--radius);
@@ -75,7 +68,6 @@
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-
     .panel .bar{
       display:flex; justify-content:space-between; align-items:center; gap:10px;
       padding: 12px 14px;
@@ -84,8 +76,8 @@
       font-weight:800;
       color: var(--muted);
       font-size: 13px;
+      flex-wrap:wrap;
     }
-
     .content{ padding: 14px; }
 
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
@@ -111,6 +103,7 @@
       box-shadow: var(--shadow2);
       transition: transform .06s ease;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
     .btn[disabled]{ opacity:.5; cursor:not-allowed; box-shadow:none; }
@@ -129,7 +122,7 @@
 
     .scoreTop{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat( auto-fit, minmax(190px, 1fr) );
       gap:12px;
       margin-top:12px;
     }
@@ -141,6 +134,7 @@
       box-shadow: var(--shadow2);
       position:relative;
       overflow:hidden;
+      cursor:pointer;
     }
     .scoreName{ font-weight: 900; font-size: 16px; }
     .scorePts{ font-weight: 1000; font-size: 34px; margin-top:4px; }
@@ -181,7 +175,7 @@
     .imgWrap{
       width: 100%;
       max-width: 360px;
-      margin: 10px auto 14px;
+      margin: 10px auto 12px;
       background: rgba(255,255,255,.9);
       border: 1px solid rgba(0,0,0,.08);
       border-radius: 22px;
@@ -196,12 +190,30 @@
       background: #fff;
     }
 
+    .audioWrap{
+      max-width: 420px;
+      margin: 8px auto 0;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: var(--shadow2);
+      text-align:left;
+    }
+    .audioWrap .aLabel{
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    audio{ width:100%; }
+
     .btnGrid{
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
       max-width: 420px;
-      margin: 0 auto;
+      margin: 12px auto 0;
     }
 
     .btnRow2{
@@ -220,11 +232,10 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+      min-height: 18px;
     }
 
-    .spinAnim{
-      animation: spinPulse .65s ease-in-out;
-    }
+    .spinAnim{ animation: spinPulse .65s ease-in-out; }
     @keyframes spinPulse{
       0%{ transform: scale(1); filter: blur(0px); opacity: 1;}
       35%{ transform: scale(1.02); filter: blur(1px); opacity: .85;}
@@ -236,21 +247,23 @@
 
 <body>
   <div class="wrap">
-
     <div class="header">
       <div>
         <div class="title"><span class="bee">🐝</span> Spelling Bee Contest</div>
-        <div class="sub">No repeats until the round ends • You control the turn • Auto-save</div>
+        <div class="sub">No repeats until reset • You control the turn • Auto-save</div>
       </div>
       <button class="chip" id="hardResetBtn" title="Delete all saved progress and start fresh">Hard Reset</button>
     </div>
 
     <div class="grid">
-
       <div class="panel">
         <div class="bar">
           <div>Players & Progress</div>
-          <div><span id="remainingTxt">Remaining: 337</span> &nbsp; • &nbsp; <span id="roundTxt">Round: 0 / 337</span></div>
+          <div>
+            <span id="remainingTxt">Remaining: 337</span>
+            &nbsp; • &nbsp;
+            <span id="roundTxt">Used: 0 / 337</span>
+          </div>
         </div>
 
         <div class="content">
@@ -267,16 +280,22 @@
             <div class="speller" id="activeSpeller">—</div>
 
             <div class="word" id="wordTxt">Press SPIN</div>
-            <div class="hint" id="hintTxt">Tap “SHOW WORD” only if you want to reveal it.</div>
+            <div class="hint" id="hintTxt">Tip: SPIN chooses a new unused word.</div>
 
             <div class="imgWrap">
               <img id="wordImg" src="img/placeholder.png" alt="word image" />
             </div>
 
+            <div class="audioWrap">
+              <div class="aLabel">AUDIO (MP3) — tap PLAY (iPhone)</div>
+              <audio id="audioPlayer" controls preload="none">
+                <source id="audioSource" src="" type="audio/mpeg">
+              </audio>
+            </div>
+
             <div class="btnGrid">
-              <button class="btn btn-yellow" id="spinBtn">SPIN WORD!</button>
-              <button class="btn btn-purple" id="audioBtn">🔊 PLAY AUDIO</button>
-              <button class="btn btn-ghost" id="toggleWordBtn">SHOW WORD</button>
+              <button class="btn btn-yellow" id="spinBtn">🎡 SPIN WORD!</button>
+              <button class="btn btn-purple" id="playBtn">🔊 PLAY AUDIO</button>
 
               <div class="btnRow2">
                 <button class="btn btn-green" id="correctBtn" disabled>✅ CORRECT</button>
@@ -284,36 +303,33 @@
               </div>
 
               <div class="btnRow2">
-                <button class="btn btn-dark" id="nextPlayerBtn">SWITCH TO NEXT PLAYER</button>
-                <button class="btn btn-ghost" id="endRoundBtn">END ROUND (Report)</button>
+                <button class="btn btn-dark" id="nextPlayerBtn">NEXT PLAYER</button>
+                <button class="btn btn-ghost" id="resetRoundBtn">Reset Round</button>
               </div>
             </div>
 
             <div class="footerRow">
-              <button class="btn btn-ghost" id="resetRoundBtn">Reset Round</button>
               <button class="btn btn-ghost" id="resetScoresBtn">Reset Scores</button>
             </div>
 
-            <div class="toast" id="toast">Tip: On iPhone, audio may require a button tap (you’re good).</div>
+            <div class="toast" id="toast"></div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
 <script>
 /**
- * IMPORTANT FOR IMAGES:
- *  - Files must be in /img/
- *  - Filenames MUST be lowercase: img/july.png, img/monday.png, img/english.png
- *  - If missing, it falls back to img/placeholder.png
+ * REQUIRED FOLDERS:
+ *  - Images: /img/{key}.png   (lowercase) + img/placeholder.png
+ *  - Audio:  /audio/{key}.mp3 (lowercase)
+ *
+ * Example:
+ *  img/english.png
+ *  audio/english.mp3
  */
 
-/* ========= WORD LIST (337) =========
-   display = how it shows on screen
-   key = how we find the image (lowercase) => img/{key}.png
-*/
 const WORDS = [
   {display:"about", key:"about"},
   {display:"action", key:"action"},
@@ -654,58 +670,30 @@ const WORDS = [
   {display:"wait", key:"wait"}
 ];
 
-// Safety check: show in console if not 337
-console.log("WORDS length:", WORDS.length);
+const LS_KEY = "spellingBee_v2_state";
 
-/* ========= STATE ========= */
-const LS_KEY = "spellingBee_v1_state";
+/* ====== DOM ====== */
+const el = (id)=>document.getElementById(id);
+const playerName = el("playerName");
+const addPlayerBtn = el("addPlayerBtn"); const startBtn = el("startBtn"); const scoreTop = el("scoreTop"); const gameCard = el("gameCard"); const activeSpeller = el("activeSpeller"); const wordTxt = el("wordTxt"); const hintTxt = el("hintTxt"); const wordImg = el("wordImg"); const remainingTxt = el("remainingTxt"); const roundTxt = el("roundTxt"); const spinBtn = el("spinBtn"); const playBtn = el("playBtn"); const correctBtn = el("correctBtn"); const wrongBtn = el("wrongBtn"); const nextPlayerBtn = el("nextPlayerBtn"); const resetRoundBtn = el("resetRoundBtn"); const resetScoresBtn = el("resetScoresBtn"); const hardResetBtn = el("hardResetBtn"); const toast = el("toast");
 
+const audioPlayer = el("audioPlayer");
+const audioSource = el("audioSource");
+
+/* ====== STATE ====== */
 let state = {
-  players: [],          // [{name, score}]
-  active: 0,            // active player index
-  remaining: [],        // array of indexes into WORDS not yet used
-  used: [],             // array of indexes already used
-  currentIdx: null,     // index into WORDS currently shown
-  revealed: false,      // show word?
-  scoredThisWord: false,// prevent double scoring
+  players: [],                // [{name, score}]
+  active: 0,                  // active player index
+  remaining: [],              // indexes not used yet
+  used: [],                   // indexes used
+  currentIdx: null,           // current word index
+  scoredThisWord: false,       // prevents double scoring
   started: false
 };
 
-const el = (id)=>document.getElementById(id);
-
-const playerName = el("playerName");
-const addPlayerBtn = el("addPlayerBtn");
-const startBtn = el("startBtn");
-
-const scoreTop = el("scoreTop");
-const gameCard = el("gameCard");
-const activeSpeller = el("activeSpeller");
-
-const wordTxt = el("wordTxt");
-const hintTxt = el("hintTxt");
-const wordImg = el("wordImg");
-
-const remainingTxt = el("remainingTxt");
-const roundTxt = el("roundTxt");
-
-const spinBtn = el("spinBtn");
-const audioBtn = el("audioBtn");
-const toggleWordBtn = el("toggleWordBtn");
-const correctBtn = el("correctBtn");
-const wrongBtn = el("wrongBtn");
-const nextPlayerBtn = el("nextPlayerBtn");
-const endRoundBtn = el("endRoundBtn");
-
-const resetRoundBtn = el("resetRoundBtn");
-const resetScoresBtn = el("resetScoresBtn");
-const hardResetBtn = el("hardResetBtn");
-const toast = el("toast");
-
-/* ========= SAVE / LOAD ========= */
+/* ====== SAVE/LOAD ====== */
 function save(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
-function load(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state)); } function load(){
   const raw = localStorage.getItem(LS_KEY);
   if(!raw) return false;
   try{
@@ -725,32 +713,34 @@ function hardReset(){
     remaining: [],
     used: [],
     currentIdx: null,
-    revealed: false,
     scoredThisWord: false,
     started: false
   };
   renderAll();
 }
-
-/* ========= INIT ========= */
 function initRound(){
   state.remaining = Array.from({length: WORDS.length}, (_,i)=>i);
   state.used = [];
   state.currentIdx = null;
-  state.revealed = false;
   state.scoredThisWord = false;
   state.started = true;
   save();
 }
 
-/* ========= UI RENDER ========= */
+/* ====== UI ====== */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, (m)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
 function renderPlayers(){
   scoreTop.innerHTML = "";
   if(state.players.length === 0){
     scoreTop.innerHTML = `<div class="toast">Add players (Aitana, Pedro…) then tap “Start / Resume”.</div>`;
     return;
   }
-  // Show first two as big cards; if more, still show all as cards
+
   state.players.forEach((p, idx)=>{
     const div = document.createElement("div");
     div.className = "scoreCard" + (idx===state.active ? " active" : "");
@@ -759,57 +749,29 @@ function renderPlayers(){
       <div class="scoreName">${escapeHtml(p.name)}</div>
       <div class="scorePts">${p.score}</div>
     `;
+
+    // Tap a player card to edit name (optional but helpful)
+    div.addEventListener("click", ()=>{
+      const newName = prompt("Edit player name:", p.name);
+      if(newName === null) return;
+      const t = newName.trim();
+      if(!t) return;
+      state.players[idx].name = t;
+      save();
+      renderAll();
+    });
+
     scoreTop.appendChild(div);
   });
 }
 
 function renderProgress(){
-  const rem = state.remaining?.length ?? WORDS.length;
-  const used = state.used?.length ?? 0;
+  const rem = Array.isArray(state.remaining) ? state.remaining.length : WORDS.length;
+  const used = Array.isArray(state.used) ? state.used.length : 0;
   remainingTxt.textContent = `Remaining: ${rem}`;
-  roundTxt.textContent = `Round: ${used} / ${WORDS.length}`;
-}
+  roundTxt.textContent = `Used: ${used} / ${WORDS.length}`; }
 
-function renderGame(){
-  const hasPlayers = state.players.length > 0;
-  gameCard.style.display = (hasPlayers ? "block" : "none");
-  if(!hasPlayers) return;
-
-  activeSpeller.textContent = state.players[state.active]?.name ?? "—";
-
-  const idx = state.currentIdx;
-  if(idx === null){
-    wordTxt.textContent = "Press SPIN";
-    hintTxt.textContent = "Tap “SHOW WORD” only if you want to reveal it.";
-    setImage("placeholder");
-    toggleWordBtn.textContent = "SHOW WORD";
-    correctBtn.disabled = true;
-    wrongBtn.disabled = true;
-    return;
-  }
-
-  const w = WORDS[idx];
-  const shown = state.revealed ? w.display : "Listen…";
-  wordTxt.textContent = shown;
-  hintTxt.textContent = state.revealed ? "Now decide: CORRECT or WRONG." : "Tap “SHOW WORD” only if you want to reveal it.";
-  toggleWordBtn.textContent = state.revealed ? "HIDE WORD" : "SHOW WORD";
-
-  setImage(w.key);
-
-  // enable scoring only AFTER reveal, and only once
-  correctBtn.disabled = !(state.revealed && !state.scoredThisWord);
-  wrongBtn.disabled = !(state.revealed && !state.scoredThisWord);
-}
-
-function renderAll(){
-  renderPlayers();
-  renderProgress();
-  renderGame();
-}
-
-/* ========= IMAGE ========= */
 function setImage(key){
-  // key is lower-case file name without extension
   const src = `img/${key}.png`;
   wordImg.onerror = () => {
     wordImg.onerror = null;
@@ -818,36 +780,86 @@ function setImage(key){
   wordImg.src = src;
 }
 
-/* ========= GAME LOGIC ========= */
+function setAudio(key){
+  // Loads MP3 into the audio controls (mobile-friendly)
+  const src = `audio/${key}.mp3`;
+  audioSource.src = src;
+  audioPlayer.load();
+}
+
+function toastMsg(msg){
+  toast.textContent = msg || "";
+}
+
+function renderGame(){
+  const hasPlayers = state.players.length > 0;
+  gameCard.style.display = hasPlayers ? "block" : "none";
+  if(!hasPlayers) return;
+
+  activeSpeller.textContent = state.players[state.active]?.name ?? "—";
+
+  if(state.currentIdx === null){
+    wordTxt.textContent = "Press SPIN";
+    hintTxt.textContent = "SPIN chooses a new unused word.";
+    setImage("placeholder");
+    audioSource.src = "";
+    audioPlayer.load();
+    correctBtn.disabled = true;
+    wrongBtn.disabled = true;
+    return;
+  }
+
+  const w = WORDS[state.currentIdx];
+  wordTxt.textContent = w.display;
+  hintTxt.textContent = state.scoredThisWord
+    ? "Recorded ✅ Spin to get the next word."
+    : "Tap PLAY AUDIO, then choose CORRECT or WRONG.";
+
+  setImage(w.key);
+  setAudio(w.key);
+
+  // scoring enabled only once per word (until next SPIN)
+  correctBtn.disabled = state.scoredThisWord;
+  wrongBtn.disabled = state.scoredThisWord; }
+
+function renderAll(){
+  renderPlayers();
+  renderProgress();
+  renderGame();
+}
+
+/* ====== GAME LOGIC ====== */
 function pickNextWord(){
-  if(!state.remaining || state.remaining.length === 0){
-    toast.textContent = "Round finished ✅ Tap “Reset Round” to play again.";
+  if(!Array.isArray(state.remaining) || state.remaining.length === 0){
+    toastMsg("Round finished ✅ Tap “Reset Round” to start over.");
     state.currentIdx = null;
-    state.revealed = false;
     state.scoredThisWord = false;
     save();
     renderAll();
     return;
   }
+
   const r = Math.floor(Math.random() * state.remaining.length);
   const idx = state.remaining.splice(r,1)[0];
   state.used.push(idx);
   state.currentIdx = idx;
-  state.revealed = false;
   state.scoredThisWord = false;
   save();
   renderAll();
 }
 
-function score(correct){
+function score(isCorrect){
   if(state.currentIdx === null) return;
-  if(!state.revealed) return;
-  if(state.scoredThisWord) return; // prevents double tap scoring
+  if(state.scoredThisWord) return; // prevents double scoring
 
-  if(correct){
+  if(isCorrect){
     state.players[state.active].score += 1;
+    toastMsg("✅ Correct recorded.");
+  } else {
+    toastMsg("❌ Wrong recorded.");
   }
-  state.scoredThisWord = true; // lock until next spin
+
+  state.scoredThisWord = true; // lock until next SPIN
   save();
   renderAll();
 }
@@ -855,91 +867,58 @@ function score(correct){
 function nextPlayer(){
   if(state.players.length === 0) return;
   state.active = (state.active + 1) % state.players.length;
+  toastMsg(`Now it’s ${state.players[state.active].name}’s turn!`);
   save();
   renderAll();
 }
 
-function toggleReveal(){
-  if(state.currentIdx === null) return;
-  state.revealed = !state.revealed;
-  save();
-  renderAll();
-}
-
-/* ========= AUDIO (best possible on iPhone) =========
-   Note: “Alexa/Google real voice” is not possible offline in a static GitHub Pages page.
-   This uses iOS SpeechSynthesis voices; we pick an English voice if available.
-*/
-let chosenVoice = null;
-
-function pickVoice(){
+/* ====== AUDIO PLAY (MP3 + fallback TTS) ====== */ let chosenVoice = null; function pickVoice(){
   const voices = speechSynthesis.getVoices?.() || [];
-  // Prefer English US/UK, then any English
-  const preferred = voices.find(v => /en-US/i.test(v.lang) && /Siri|Voice|Enhanced|Google|Alex/i.test(v.name)) ||
-                    voices.find(v => /en-US/i.test(v.lang)) ||
-                    voices.find(v => /en-GB/i.test(v.lang)) ||
-                    voices.find(v => /en/i.test(v.lang)) ||
-                    voices[0] || null;
+  const preferred =
+    voices.find(v => /en-US/i.test(v.lang) && /Siri|Enhanced|Google|Alex/i.test(v.name)) ||
+    voices.find(v => /en-US/i.test(v.lang)) ||
+    voices.find(v => /en-GB/i.test(v.lang)) ||
+    voices.find(v => /^en/i.test(v.lang)) ||
+    voices[0] || null;
   chosenVoice = preferred;
 }
-
 if("speechSynthesis" in window){
   speechSynthesis.onvoiceschanged = pickVoice;
   pickVoice();
 }
-
-function speakCurrent(){
-  if(state.currentIdx === null) return;
-  const w = WORDS[state.currentIdx];
-  const text = w.display; // speak the actual word
-  if(!("speechSynthesis" in window)){
-    toast.textContent = "Audio not supported on this browser.";
-    return;
-  }
+function speakFallback(word){
+  if(!("speechSynthesis" in window)) return;
   try{
     speechSynthesis.cancel();
-    const ut = new SpeechSynthesisUtterance(text);
+    const ut = new SpeechSynthesisUtterance(word);
     ut.lang = "en-US";
     if(chosenVoice) ut.voice = chosenVoice;
-    ut.rate = 0.92;  // a bit clearer
+    ut.rate = 0.72; // clearer for kids
     ut.pitch = 1.0;
     ut.volume = 1.0;
     speechSynthesis.speak(ut);
-  }catch(e){
-    toast.textContent = "Tap again — iPhone sometimes needs a second tap.";
-  }
+  }catch(e){}
 }
 
-/* ========= REPORT ========= */
-function downloadReport(){
-  const rows = [];
-  rows.push(["timestamp","player","result","word","round_number"]);
-  const now = new Date().toISOString();
-  // Lightweight: just snapshot scores + remaining/used summary (no per-word history in this version)
-  state.players.forEach(p=>{
-    rows.push([now, p.name, "score", String(p.score), String(state.used?.length || 0)]);
+function playAudio(){
+  if(state.currentIdx === null) return;
+  const w = WORDS[state.currentIdx];
+
+  // Try MP3 first
+  const src = `audio/${w.key}.mp3`;
+  audioSource.src = src;
+  audioPlayer.load();
+
+  audioPlayer.play().then(()=>{
+    toastMsg("");
+  }).catch(()=>{
+    // If autoplay blocked or file missing, fallback to TTS
+    toastMsg("If MP3 didn’t play, tap the ▶️ on the audio bar. (Fallback voice will speak now.)");
+    speakFallback(w.display.toLowerCase());
   });
-  rows.push([now, "SYSTEM", "remaining", String(state.remaining?.length || 0), String(WORDS.length)]);
-  const csv = rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `spelling_bee_report_${(new Date()).toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
 }
 
-/* ========= HELPERS ========= */
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, (m)=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[m]));
-}
-
-/* ========= EVENTS ========= */
+/* ====== EVENTS ====== */
 addPlayerBtn.addEventListener("click", ()=>{
   const name = (playerName.value || "").trim();
   if(!name) return;
@@ -951,64 +930,63 @@ addPlayerBtn.addEventListener("click", ()=>{
 });
 
 startBtn.addEventListener("click", ()=>{
-  if(state.players.length === 0) return;
-  if(!state.started || !Array.isArray(state.remaining) || state.remaining.length===0 && (state.used?.length||0)===0){
-    initRound();
+  if(state.players.length === 0){
+    toastMsg("Add at least 1 player first.");
+    return;
   }
-  save();
+  if(!state.started || !Array.isArray(state.remaining) || (state.remaining.length===0 && (state.used?.length||0)===0)){
+    initRound();
+  } else {
+    state.started = true;
+    save();
+  }
+  toastMsg("Ready ✅ Tap SPIN.");
   renderAll();
 });
 
 spinBtn.addEventListener("click", ()=>{
-  if(state.players.length === 0) return;
+  if(state.players.length === 0){
+    toastMsg("Add players first.");
+    return;
+  }
   if(!state.started) initRound();
 
-  // Animate word / image card
   gameCard.classList.remove("spinAnim");
   void gameCard.offsetWidth;
   gameCard.classList.add("spinAnim");
 
   pickNextWord();
-  // auto speak after spin
-  setTimeout(()=>speakCurrent(), 120);
-});
 
-audioBtn.addEventListener("click", ()=> speakCurrent());
-toggleWordBtn.addEventListener("click", ()=> toggleReveal());
+  // iPhone: do NOT rely on autoplay; but we can try to start it
+  setTimeout(()=>{ /* optional attempt */ }, 120); });
 
-correctBtn.addEventListener("click", ()=> score(true));
-wrongBtn.addEventListener("click", ()=> score(false));
-
-nextPlayerBtn.addEventListener("click", ()=> nextPlayer());
-
-endRoundBtn.addEventListener("click", ()=> downloadReport());
+playBtn.addEventListener("click", ()=> playAudio()); correctBtn.addEventListener("click", ()=> score(true)); wrongBtn.addEventListener("click", ()=> score(false)); nextPlayerBtn.addEventListener("click", ()=> nextPlayer());
 
 resetRoundBtn.addEventListener("click", ()=>{
-  if(!confirm("Reset the round (words start over)?")) return;
+  if(!confirm("Reset the round (words start over, no repeats again)?")) return;
   initRound();
+  toastMsg("Round reset ✅ Tap SPIN.");
   save();
   renderAll();
 });
 
 resetScoresBtn.addEventListener("click", ()=>{
-  if(!confirm("Reset scores to 0?")) return;
+  if(!confirm("Reset all scores to 0?")) return;
   state.players = state.players.map(p=>({name:p.name, score:0}));
+  toastMsg("Scores reset ✅");
   save();
   renderAll();
 });
 
 hardResetBtn.addEventListener("click", ()=>{
-  if(!confirm("Hard Reset will delete saved progress, players, scores, and round. Continue?")) return;
+  if(!confirm("Hard Reset deletes players, scores, saved progress. Continue?")) return;
   hardReset();
 });
 
-/* ========= BOOT ========= */
+/* ====== BOOT ====== */
 load();
-if(!state.remaining || !Array.isArray(state.remaining) || state.remaining.length===0 && (state.used?.length||0)===0){
-  // not started yet
-  state.started = false;
+if(!Array.isArray(state.remaining) || (!state.started && state.players.length===0)){
+  // okay
 }
 renderAll();
-</script>
-</body>
-</html>
+toastMsg("Tip: Make sure your images are in /img and audio in /audio (lowercase)."); </script> </body> </html> 
