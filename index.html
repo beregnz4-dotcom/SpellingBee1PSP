@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Spelling Bee Contest</title>
-
+  <title>Spelling Bee Contest (PRO)</title>
   <style>
     :root{
       --bg1:#fff6dc; --bg2:#ffe7a6;
-      --card:rgba(255,255,255,.78);
-      --card2:rgba(255,255,255,.9);
+      --card: rgba(255,255,255,.78);
       --text:#3b2b1f; --muted:#7b6a5c;
       --yellow:#f4b000; --yellow2:#eaa200;
       --purple:#7a4dff; --green:#27c36a; --red:#ff4b4b; --dark:#1f2430;
       --radius:22px;
       --shadow: 0 18px 40px rgba(0,0,0,.12);
       --shadow2: 0 10px 18px rgba(0,0,0,.12);
+      --line: 1px solid rgba(0,0,0,.08);
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -30,52 +30,54 @@
       padding: 18px 14px 40px;
     }
     .wrap{ max-width: 980px; margin: 0 auto; }
+
     .header{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       padding:14px 16px;
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+      background: linear-gradient(180deg, rgba(255,255,255,.90), rgba(255,255,255,.55));
       box-shadow: var(--shadow2);
-      border: 1px solid rgba(0,0,0,.06);
-      flex-wrap:wrap;
+      border: var(--line);
     }
     .title{
       display:flex; align-items:center; gap:10px;
-      font-weight: 900; letter-spacing:.2px;
-      font-size: clamp(18px, 2.8vw, 26px);
+      font-weight: 950; letter-spacing:.2px;
+      font-size: 26px;
+      margin:0;
     }
     .sub{
       margin-top:6px;
       color:var(--muted);
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 650;
     }
     .chip{
       background: rgba(255,255,255,.92);
-      border:1px solid rgba(0,0,0,.08);
+      border: var(--line);
       padding:10px 12px;
       border-radius: 999px;
-      font-weight: 900;
+      font-weight: 850;
       font-size: 13px;
       box-shadow: 0 6px 10px rgba(0,0,0,.08);
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
     }
+
     .grid{ margin-top:14px; display:grid; grid-template-columns: 1fr; gap:14px; }
 
     .panel{
       border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.70);
+      border: var(--line);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .bar{
       display:flex; justify-content:space-between; align-items:center; gap:10px;
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(0,0,0,.06);
-      background: rgba(255,255,255,.6);
-      font-weight:900;
+      border-bottom: var(--line);
+      background: rgba(255,255,255,.60);
+      font-weight:850;
       color: var(--muted);
       font-size: 13px;
       flex-wrap:wrap;
@@ -83,16 +85,18 @@
     .content{ padding: 14px; }
 
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
     .input{
       flex: 1;
-      min-width: 190px;
+      min-width: 200px;
       border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.12);
+      border: var(--line);
       padding: 12px 12px;
       font-size: 16px;
       background: rgba(255,255,255,.95);
       outline: none;
     }
+
     .btn{
       border: 0;
       border-radius: 16px;
@@ -101,14 +105,12 @@
       letter-spacing:.2px;
       cursor: pointer;
       box-shadow: var(--shadow2);
-      transition: transform .06s ease;
+      transition: transform .06s ease, opacity .15s ease;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-      font-size: 15px;
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
     .btn[disabled]{ opacity:.5; cursor:not-allowed; box-shadow:none; }
-
     .btn-yellow{ background: linear-gradient(180deg, var(--yellow), var(--yellow2)); color:#fff; }
     .btn-purple{ background: linear-gradient(180deg, #8b63ff, var(--purple)); color:#fff; }
     .btn-green{ background: linear-gradient(180deg, #34d97b, var(--green)); color:#fff; }
@@ -116,47 +118,71 @@
     .btn-dark{ background: linear-gradient(180deg, #2a3242, var(--dark)); color:#fff; }
     .btn-ghost{
       background: rgba(255,255,255,.92);
-      border: 1px solid rgba(0,0,0,.10);
+      border: var(--line);
       color: var(--text);
       box-shadow:none;
+      font-weight:850;
     }
 
-    .tabs{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-top:10px;
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
     }
-    .tab{
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.85);
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
+    @media (max-width: 860px){
+      .twoCol{ grid-template-columns: 1fr; }
     }
-    .tab.active{
-      background: linear-gradient(180deg, #8b63ff, var(--purple));
-      color:#fff;
-      border-color: transparent;
+
+    .card{
+      background: var(--card);
+      border: var(--line);
       box-shadow: var(--shadow2);
+      border-radius: 18px;
+      padding: 12px;
     }
+    .card h3{
+      margin:0 0 8px;
+      font-size: 14px;
+      letter-spacing:.4px;
+      color: var(--muted);
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .toggleRow{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin-top:8px;
+    }
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius: 999px;
+      border: var(--line);
+      background: rgba(255,255,255,.9);
+      cursor:pointer;
+      font-weight:850;
+      user-select:none;
+    }
+    .pill input{ transform: scale(1.15); }
 
     .scoreTop{
       display:grid;
-      grid-template-columns: repeat( auto-fit, minmax(190px, 1fr) );
+      grid-template-columns: repeat( auto-fit, minmax(210px, 1fr) );
       gap:12px;
       margin-top:12px;
     }
     .scoreCard{
       border-radius: 18px;
       padding: 12px;
-      background: var(--card2);
-      border: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.86);
+      border: var(--line);
       box-shadow: var(--shadow2);
       position:relative;
       overflow:hidden;
       cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .scoreName{ font-weight: 900; font-size: 16px; }
+    .scoreName{ font-weight: 950; font-size: 16px; }
     .scorePts{ font-weight: 1000; font-size: 34px; margin-top:4px; }
     .turnBadge{
       position:absolute; right:10px; top:10px;
@@ -171,137 +197,64 @@
     }
     .scoreCard.active .turnBadge{ display:inline-block; }
 
-    .setupCard{
-      margin-top:12px;
-      border-radius: 22px;
-      background: var(--card2);
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: var(--shadow2);
-      padding: 14px;
-    }
-    .setupGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-    }
-    .switchRow{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.08);
-      background: rgba(255,255,255,.9);
-    }
-    .switchRow .left{
-      display:flex; flex-direction:column; gap:4px;
-    }
-    .switchRow .label{
-      font-weight:1000;
-    }
-    .switchRow .desc{
-      font-size:12px; color:var(--muted); font-weight:700;
-    }
-    .toggle{
-      display:flex; align-items:center; gap:10px; font-weight:900;
-    }
-    input[type="checkbox"].big{
-      width:22px; height:22px;
-      accent-color: var(--purple);
-      cursor:pointer;
-    }
-
-    .wordPicker{
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.08);
-      background: rgba(255,255,255,.92);
-      padding:12px;
-    }
-    .pickerTop{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      margin-bottom:10px;
-    }
-    .search{
-      flex:1;
-      min-width: 180px;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.12);
-      padding: 10px 12px;
-      font-size: 15px;
-      background: rgba(255,255,255,.95);
-      outline:none;
-    }
-    .pickerList{
-      max-height: 320px;
-      overflow:auto;
-      border-radius: 14px;
-      border:1px solid rgba(0,0,0,.08);
-      background:#fff;
-      padding:8px;
-    }
-    .pickItem{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:10px 10px;
-      border-radius: 12px;
-      border:1px solid rgba(0,0,0,.06);
-      background: rgba(255,255,255,.95);
-      margin-bottom:8px;
-    }
-    .pickItem .w{
-      font-weight:900;
-      font-size: 15px;
-    }
-    .pickItem .k{
-      font-size:12px; color:var(--muted); font-weight:800;
-    }
-
     .gameCard{
       margin-top: 12px;
       border-radius: 22px;
-      background: var(--card2);
-      border: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.86);
+      border: var(--line);
       box-shadow: var(--shadow);
       padding: 14px;
       text-align:center;
     }
-    .labelSmall{ color: var(--muted); font-weight: 900; font-size: 12px; letter-spacing:.6px; }
-    .speller{ font-weight: 1000; font-size: clamp(18px, 2.8vw, 26px); margin-top: 6px; }
+    .labelSmall{ color: var(--muted); font-weight: 950; font-size: 12px; letter-spacing:.8px; text-transform:uppercase; }
+    .speller{ font-weight: 1000; font-size: 22px; margin-top: 6px; }
     .word{
       font-weight: 1100;
-      font-size: clamp(44px, 7vw, 110px);
+      font-size: 56px;
       letter-spacing: .8px;
       margin: 10px 0 4px;
       color: #3a2419;
       word-break: break-word;
       line-height: 1.05;
     }
-    .hint{ color: var(--muted); font-weight: 800; font-size: 13px; margin-bottom: 10px; }
+    .hint{ color: var(--muted); font-weight: 750; font-size: 13px; margin-bottom: 10px; min-height: 18px;}
 
-   .imgWrap{
-  width: 100%;
-  max-width: 480px;
-  aspect-ratio: 1 / 1;        /* 🔥 Todas cuadradas */
-  margin: 14px auto;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: var(--shadow2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.imgWrap img{
-  width: 100%;
-  height: 100%;
-  object-fit: contain;        /* 🔥 NO se deforma */
-}
-
+    /* Image: same visual size, no deformation */
+    .imgWrap{
+      width: 100%;
+      max-width: 520px;
+      margin: 10px auto 10px;
+      background: rgba(255,255,255,.92);
+      border: var(--line);
+      border-radius: 22px;
+      padding: 12px;
+      box-shadow: var(--shadow2);
+    }
+    .imgBox{
+      width: 100%;
+      height: 280px;           /* similar size */
+      border-radius: 16px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .imgBox img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;     /* no deformation */
+      display:block;
+    }
+    @media (max-width: 520px){
+      .imgBox{ height: 220px; }
+    }
 
     .audioWrap{
       max-width: 520px;
-      margin: 8px auto 0;
-      background: rgba(255,255,255,.95);
-      border: 1px solid rgba(0,0,0,.08);
+      margin: 10px auto 0;
+      background: rgba(255,255,255,.92);
+      border: var(--line);
       border-radius: 18px;
       padding: 10px;
       box-shadow: var(--shadow2);
@@ -309,9 +262,11 @@
     }
     .audioWrap .aLabel{
       font-size:12px;
-      font-weight:900;
+      font-weight:950;
       color:var(--muted);
       margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.6px;
     }
     audio{ width:100%; }
 
@@ -319,7 +274,7 @@
       display:grid;
       grid-template-columns: 1fr;
       gap:10px;
-      max-width: 560px;
+      max-width: 520px;
       margin: 12px auto 0;
     }
     .btnRow2{
@@ -327,12 +282,15 @@
       grid-template-columns: 1fr 1fr;
       gap:10px;
     }
-
+    .footerRow{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+      margin-top: 12px;
+    }
     .toast{
       margin-top: 10px;
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 750;
       min-height: 18px;
       text-align:center;
     }
@@ -340,67 +298,105 @@
     .spinAnim{ animation: spinPulse .65s ease-in-out; }
     @keyframes spinPulse{
       0%{ transform: scale(1); filter: blur(0px); opacity: 1;}
-      35%{ transform: scale(1.02); filter: blur(1px); opacity: .85;}
+      35%{ transform: scale(1.02); filter: blur(1px); opacity: .86;}
       70%{ transform: scale(.99); filter: blur(0px); opacity: 1;}
       100%{ transform: scale(1); }
     }
 
-    .reportBox{
-      margin-top:12px;
-      border-radius: 22px;
-      background: var(--card2);
+    /* Words selector */
+    .selectorTop{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .smallBtn{
+      padding:10px 12px;
+      border-radius: 14px;
+      border: var(--line);
+      background: rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:none;
+    }
+    .smallBtn:active{ transform: translateY(1px); }
+    .selectList{
+      margin-top:10px;
+      height: 360px;
+      overflow:auto;
+      border-radius: 16px;
+      border: var(--line);
+      background: rgba(255,255,255,.92);
+      padding: 8px;
+    }
+    .wordItem{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border-radius: 12px;
       border: 1px solid rgba(0,0,0,.06);
-      box-shadow: var(--shadow2);
+      margin-bottom:8px;
+      background: rgba(255,255,255,.86);
+    }
+    .wordLeft{
+      display:flex; align-items:center; gap:10px;
+      font-weight:950;
+    }
+    .wBadge{
+      width:28px; height:28px;
+      display:flex; align-items:center; justify-content:center;
+      border-radius: 10px;
+      background: rgba(244,176,0,.18);
+      border: 1px solid rgba(244,176,0,.25);
+      font-size: 12px;
+      font-weight:1000;
+      color:#5a3a00;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: #5b4a3c;
+      opacity:.8;
+    }
+
+    /* Modal */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+      z-index: 50;
+    }
+    .modal{
+      width: min(920px, 100%);
+      max-height: 92vh;
+      overflow:auto;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85));
+      box-shadow: 0 24px 70px rgba(0,0,0,.25);
       padding: 14px;
     }
-    .reportGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
+    .modalHead{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding: 6px 4px 12px;
+      border-bottom: var(--line);
+      margin-bottom: 12px;
     }
-    .repCard{
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:16px;
-      background:#fff;
-      padding:12px;
-    }
-    .repTitle{
+    .modalTitle{
+      font-size: 18px;
       font-weight:1000;
-      margin-bottom:6px;
-      font-size:16px;
+      margin:0;
     }
-    .pillRow{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
-    .pill{
-      border-radius:999px;
-      padding:8px 10px;
-      font-weight:1000;
-      font-size:12px;
-      border:1px solid rgba(0,0,0,.08);
+    .closeBtn{
+      border: var(--line);
       background: rgba(255,255,255,.95);
+      font-weight:1000;
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
     }
-    .listMini{
-      font-size:13px;
-      font-weight:800;
-      color:#2b2018;
-      line-height:1.35;
-    }
-    .listMini span{
-      display:inline-block;
-      padding:6px 8px;
-      border-radius:12px;
-      border:1px solid rgba(0,0,0,.08);
-      margin:4px 6px 0 0;
-      background: rgba(255,246,220,.65);
-    }
+    .hr{ height:1px; background: rgba(0,0,0,.08); margin: 12px 0; }
 
-    .hide{ display:none !important; }
-
-    @media (min-width: 900px){
-      .setupGrid{
-        grid-template-columns: 1.15fr .85fr;
-        align-items:start;
-      }
-    }
   </style>
 </head>
 
@@ -408,12 +404,13 @@
   <div class="wrap">
     <div class="header">
       <div>
-        <div class="title">🐝 Spelling Bee Contest</div>
-        <div class="sub">No repeats until reset • You control the turn • Auto-save • TV-friendly</div>
+        <h1 class="title"><span style="font-size:26px">🐝</span> Spelling Bee Contest <span style="font-size:12px; opacity:.65">(PRO)</span></h1>
+        <div class="sub">Select words • Images optional • MP3 auto-play • No repeats • Player report • Auto-save</div>
       </div>
-      <div class="row">
-        <button class="chip" id="exportBtn" title="Export report CSV">Export CSV</button>
-        <button class="chip" id="hardResetBtn" title="Delete everything saved and start fresh">Hard Reset</button>
+      <div class="row" style="justify-content:flex-end">
+        <button class="chip" id="settingsBtn" title="Game settings (words/images)">Settings</button>
+        <button class="chip" id="exportBtn" title="Export CSV report">Export Report</button>
+        <button class="chip" id="hardResetBtn" title="Delete all saved progress and start fresh">Hard Reset</button>
       </div>
     </div>
 
@@ -422,105 +419,77 @@
         <div class="bar">
           <div>Players & Progress</div>
           <div>
-            <span id="remainingTxt">Remaining: 0</span>
+            <span id="selectedTxt">Selected words: 337</span>
+            &nbsp; • &nbsp;
+            <span id="remainingTxt">Remaining: 337</span>
             &nbsp; • &nbsp;
             <span id="usedTxt">Used: 0</span>
-            &nbsp; • &nbsp;
-            <span id="poolTxt">Pool: 0</span>
           </div>
         </div>
 
         <div class="content">
-          <div class="tabs">
-            <button class="tab active" id="tabSetup">Setup</button>
-            <button class="tab" id="tabGame">Game</button>
-            <button class="tab" id="tabReport">Report</button>
-          </div>
 
-          <!-- SETUP -->
-          <div class="setupCard" id="setupView">
-            <div class="setupGrid">
-              <div class="wordPicker">
-                <div class="pickerTop">
-                  <input class="search" id="searchBox" placeholder="Search word (ex: quiet, July, address…)" />
-                  <button class="btn btn-ghost" id="selAllBtn">Select All</button>
-                  <button class="btn btn-ghost" id="clearBtn">Clear</button>
-                </div>
-
-                <div class="toast" id="setupToast"></div>
-
-                <div class="pickerList" id="pickerList"></div>
-
-                <div class="row" style="margin-top:10px;">
-                  <button class="btn btn-yellow" id="useSelectedBtn">Use Selected Words</button>
-                  <button class="btn btn-ghost" id="useAllBtn">Use All 337 (Default)</button>
-                </div>
-
-                <div class="toast">
-                  Tip: This avoids typos. You don’t paste lists—just check the words you want.
-                </div>
+          <div class="twoCol">
+            <div class="card">
+              <h3>Players</h3>
+              <div class="row">
+                <input class="input" id="playerName" placeholder="Player name (Aitana, Pedro…)" />
+                <button class="btn btn-yellow" id="addPlayerBtn">Add</button>
+                <button class="btn btn-ghost" id="startBtn">Start / Resume</button>
+              </div>
+              <div class="toast" style="text-align:left;margin-top:10px">
+                Tip: Tap a player card to edit name • Long press not needed
               </div>
 
-              <div class="setupCard" style="margin:0; padding:0; background:transparent; border:0; box-shadow:none;">
-                <div class="switchRow">
-                  <div class="left">
-                    <div class="label">Show images</div>
-                    <div class="desc">One-time setting for the whole game</div>
-                  </div>
-                  <div class="toggle">
-                    <label style="font-weight:1000;">OFF</label>
-                    <input id="imagesToggle" class="big" type="checkbox" />
-                    <label style="font-weight:1000;">ON</label>
-                  </div>
-                </div>
+              <div class="scoreTop" id="scoreTop"></div>
+            </div>
 
-                <div class="switchRow" style="margin-top:12px;">
-                  <div class="left">
-                    <div class="label">Players</div>
-                    <div class="desc">Tap a card later to rename</div>
-                  </div>
-                </div>
+            <div class="card">
+              <h3>Game Options (apply to this game)</h3>
 
-                <div class="row" style="margin-top:10px;">
-                  <input class="input" id="playerName" placeholder="Player name (Aitana, Pedro…)" />
-                  <button class="btn btn-yellow" id="addPlayerBtn">Add Player</button>
-                </div>
+              <div class="toggleRow">
+                <label class="pill" title="Show images during this game">
+                  <input type="checkbox" id="showImagesChk" />
+                  Show images
+                </label>
 
-                <div class="scoreTop" id="scoreTop"></div>
+                <label class="pill" title="Auto-play MP3 when the word appears">
+                  <input type="checkbox" id="autoPlayChk" checked />
+                  Auto-play audio
+                </label>
 
-                <div class="row" style="margin-top:12px;">
-                  <button class="btn btn-green" id="startBtn">Start / Resume</button>
-                  <button class="btn btn-ghost" id="resetRoundBtn">Reset Round</button>
-                  <button class="btn btn-ghost" id="resetScoresBtn">Reset Scores</button>
-                </div>
+                <button class="smallBtn" id="openWordsBtn" title="Choose which words to include">Choose words</button>
+              </div>
 
-                <div class="toast" id="toastGlobal"></div>
+              <div class="toast" style="text-align:left;margin-top:10px" id="optHint">
+                Images: looks for <span class="kbd">img/{word}.png</span> • Audio: <span class="kbd">audio/{word}.mp3</span> (lowercase filenames)
               </div>
             </div>
           </div>
 
-          <!-- GAME -->
-          <div class="gameCard hide" id="gameView">
-            <div class="labelSmall">ACTIVE SPELLER</div>
+          <div class="gameCard" id="gameCard" style="display:none;">
+            <div class="labelSmall">Active speller</div>
             <div class="speller" id="activeSpeller">—</div>
 
             <div class="word" id="wordTxt">Press SPIN</div>
-            <div class="hint" id="hintTxt">SPIN chooses a new unused word from your pool.</div>
+            <div class="hint" id="hintTxt">SPIN chooses a new unused word from your selected list.</div>
 
-            <div class="imgWrap" id="imgWrap">
-              <img id="wordImg" src="img/placeholder.png" alt="word image" />
+            <div class="imgWrap" id="imgWrap" style="display:none;">
+              <div class="imgBox">
+                <img id="wordImg" src="img/placeholder.png" alt="word image" />
+              </div>
             </div>
 
             <div class="audioWrap">
-              <div class="aLabel">AUDIO (MP3) — tap PLAY</div>
+              <div class="aLabel">Audio (MP3) — repeat anytime</div>
               <audio id="audioPlayer" controls preload="none">
                 <source id="audioSource" src="" type="audio/mpeg">
               </audio>
             </div>
 
             <div class="btnGrid">
-              <button class="btn btn-yellow" id="spinBtn">🎡 SPIN WORD</button>
-              <button class="btn btn-purple" id="playBtn">🔊 PLAY AUDIO</button>
+              <button class="btn btn-yellow" id="spinBtn">🎡 SPIN WORD!</button>
+              <button class="btn btn-purple" id="repeatBtn" disabled>🔁 REPEAT AUDIO</button>
 
               <div class="btnRow2">
                 <button class="btn btn-green" id="correctBtn" disabled>✅ CORRECT</button>
@@ -529,21 +498,15 @@
 
               <div class="btnRow2">
                 <button class="btn btn-dark" id="nextPlayerBtn">NEXT PLAYER</button>
-                <button class="btn btn-ghost" id="goReportBtn">VIEW REPORT</button>
+                <button class="btn btn-ghost" id="resetRoundBtn">Reset Round</button>
               </div>
             </div>
 
-            <div class="toast" id="toastGame"></div>
-          </div>
-
-          <!-- REPORT -->
-          <div class="reportBox hide" id="reportView">
-            <div class="reportGrid" id="reportGrid"></div>
-            <div class="row" style="margin-top:10px;">
-              <button class="btn btn-ghost" id="backToGameBtn">Back to Game</button>
-              <button class="btn btn-yellow" id="exportBtn2">Export CSV</button>
+            <div class="footerRow">
+              <button class="btn btn-ghost" id="resetScoresBtn">Reset Scores</button>
             </div>
-            <div class="toast" id="toastReport"></div>
+
+            <div class="toast" id="toast"></div>
           </div>
 
         </div>
@@ -551,14 +514,80 @@
     </div>
   </div>
 
-<script>
-/* ======================================================
-   REQUIRED FOLDERS:
-   - Images: /img/{key}.png (lowercase) + img/placeholder.png
-   - Audio:  /audio/{key}.mp3 (lowercase)
-====================================================== */
+  <!-- Settings / Words Modal -->
+  <div class="modalOverlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modalHead">
+        <div>
+          <p class="modalTitle" style="margin:0">Game Settings</p>
+          <div style="font-size:12px;color:var(--muted);font-weight:750;margin-top:4px">
+            Pick words safely (no typos). Default is all 337.
+          </div>
+        </div>
+        <button class="closeBtn" id="closeModalBtn">Close</button>
+      </div>
 
-const WORDS = [
+      <div class="twoCol">
+        <div class="card">
+          <h3>Word Selection</h3>
+          <div class="selectorTop">
+            <div class="row" style="flex:1">
+              <input class="input" id="searchWords" placeholder="Search (e.g., 'th', 'ou', 'July')…" />
+            </div>
+            <div class="row" style="gap:8px">
+              <button class="smallBtn" id="selectAllBtn">All</button>
+              <button class="smallBtn" id="selectNoneBtn">None</button>
+              <button class="smallBtn" id="selectRandomBtn">Random 25</button>
+            </div>
+          </div>
+
+          <div class="selectList" id="wordsList"></div>
+
+          <div class="row" style="margin-top:10px; justify-content:space-between">
+            <div style="font-weight:900;color:var(--muted);font-size:13px">
+              Selected: <span id="selCount">337</span> / 337
+            </div>
+            <button class="btn btn-yellow" id="applyWordsBtn">Apply Selection</button>
+          </div>
+
+          <div class="toast" style="text-align:left">
+            Uses lowercase keys for files: <span class="kbd">img/july.png</span> + <span class="kbd">audio/july.mp3</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Report Preview</h3>
+          <div style="font-size:13px;color:var(--muted);font-weight:750;line-height:1.35">
+            Export includes per attempt:
+            <ul style="margin:10px 0 0 18px">
+              <li>player</li>
+              <li>word</li>
+              <li>correct / wrong</li>
+              <li>timestamp</li>
+              <li>round attempt #</li>
+            </ul>
+          </div>
+
+          <div class="hr"></div>
+
+          <h3>Important</h3>
+          <div style="font-size:13px;color:var(--muted);font-weight:750;line-height:1.35">
+            Audio auto-play works best after you tap at least once (iPhone/Safari rule).
+            If a MP3 is missing, you’ll see a note (and you can still score).
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+/* =======================
+   WORD LIST (337)
+   display: shown on screen
+   key: lowercase filename base
+======================= */
+const MASTER_WORDS = [
   {display:"about", key:"about"},
   {display:"action", key:"action"},
   {display:"address", key:"address"},
@@ -895,44 +924,28 @@ const WORDS = [
   {display:"thorn", key:"thorn"},
   {display:"throb", key:"throb"},
   {display:"throw", key:"throw"},
-  {display:"wait", key:"wait"}
+  {display:"wait", key:"wait"},
 ];
 
-const LS_KEY = "spellingBee_v3_state";
+const LS_KEY = "spellingBee_PRO_state_v1";
 
 /* ===== DOM ===== */
 const $ = (id)=>document.getElementById(id);
 
-const remainingTxt = $("remainingTxt");
-const usedTxt = $("usedTxt");
-const poolTxt = $("poolTxt");
-
-const tabSetup = $("tabSetup");
-const tabGame = $("tabGame");
-const tabReport = $("tabReport");
-
-const setupView = $("setupView");
-const gameView = $("gameView");
-const reportView = $("reportView");
+const settingsBtn = $("settingsBtn");
+const exportBtn = $("exportBtn");
+const hardResetBtn = $("hardResetBtn");
 
 const playerName = $("playerName");
 const addPlayerBtn = $("addPlayerBtn");
 const startBtn = $("startBtn");
-const resetRoundBtn = $("resetRoundBtn");
-const resetScoresBtn = $("resetScoresBtn");
-const hardResetBtn = $("hardResetBtn");
+
+const showImagesChk = $("showImagesChk");
+const autoPlayChk = $("autoPlayChk");
+const openWordsBtn = $("openWordsBtn");
 
 const scoreTop = $("scoreTop");
-const toastGlobal = $("toastGlobal");
-const setupToast = $("setupToast");
-
-const imagesToggle = $("imagesToggle");
-const searchBox = $("searchBox");
-const pickerList = $("pickerList");
-const selAllBtn = $("selAllBtn");
-const clearBtn = $("clearBtn");
-const useSelectedBtn = $("useSelectedBtn");
-const useAllBtn = $("useAllBtn");
+const gameCard = $("gameCard");
 
 const activeSpeller = $("activeSpeller");
 const wordTxt = $("wordTxt");
@@ -944,35 +957,44 @@ const audioPlayer = $("audioPlayer");
 const audioSource = $("audioSource");
 
 const spinBtn = $("spinBtn");
-const playBtn = $("playBtn");
+const repeatBtn = $("repeatBtn");
 const correctBtn = $("correctBtn");
 const wrongBtn = $("wrongBtn");
 const nextPlayerBtn = $("nextPlayerBtn");
+const resetRoundBtn = $("resetRoundBtn");
+const resetScoresBtn = $("resetScoresBtn");
 
-const toastGame = $("toastGame");
+const selectedTxt = $("selectedTxt");
+const remainingTxt = $("remainingTxt");
+const usedTxt = $("usedTxt");
+const toast = $("toast");
 
-const reportGrid = $("reportGrid");
-const exportBtn = $("exportBtn");
-const exportBtn2 = $("exportBtn2");
-const goReportBtn = $("goReportBtn");
-const backToGameBtn = $("backToGameBtn");
-const toastReport = $("toastReport");
+/* Modal */
+const modalOverlay = $("modalOverlay");
+const closeModalBtn = $("closeModalBtn");
+const searchWords = $("searchWords");
+const wordsList = $("wordsList");
+const selectAllBtn = $("selectAllBtn");
+const selectNoneBtn = $("selectNoneBtn");
+const selectRandomBtn = $("selectRandomBtn");
+const selCount = $("selCount");
+const applyWordsBtn = $("applyWordsBtn");
 
 /* ===== STATE ===== */
 let state = {
-  settings: {
-    showImages: true,
-    poolKeys: [],     // keys selected (lowercase). empty = all default
-  },
-  players: [],        // [{name, score, correctKeys:[], wrongKeys:[]}]
+  players: [],                 // [{name, score}]
   active: 0,
-  pool: [],           // resolved pool word objects
-  remainingIdx: [],   // indexes into pool[]
-  usedIdx: [],
-  currentIdx: null,   // index into pool[]
-  scoredThisWord: false,
+  selectedKeys: MASTER_WORDS.map(w=>w.key),   // default all
+  remainingKeys: [],           // keys not used yet (from selection)
+  usedKeys: [],                // keys used in this round
+  currentKey: null,            // current word key
+  scoredThisWord: false,       // prevents double scoring
   started: false,
-  history: []         // [{ts, player, key, display, result}]
+  options: {
+    showImages: false,
+    autoPlay: true
+  },
+  attempts: []                 // [{player, key, display, result, ts, n}]
 };
 
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
@@ -981,82 +1003,53 @@ function load(){
   if(!raw) return false;
   try{
     const obj = JSON.parse(raw);
-    if(!obj || !obj.settings || !Array.isArray(obj.players)) return false;
+    if(!obj || !Array.isArray(obj.players)) return false;
     state = obj;
     return true;
   }catch(e){ return false; }
 }
 
-function hardReset(){
-  localStorage.removeItem(LS_KEY);
-  state = {
-    settings:{ showImages:true, poolKeys:[] },
-    players:[],
-    active:0,
-    pool:[],
-    remainingIdx:[],
-    usedIdx:[],
-    currentIdx:null,
-    scoredThisWord:false,
-    started:false,
-    history:[]
-  };
-  renderAll();
-}
-
-/* ===== POOL BUILD ===== */
-function buildPoolFromKeys(keys){
-  const keySet = new Set((keys||[]).map(k=>String(k).toLowerCase().trim()).filter(Boolean));
-  if(keySet.size === 0){
-    return WORDS.map(w=>({display:w.display, key:w.key}));
-  }
-  const out = [];
-  for(const w of WORDS){
-    if(keySet.has(w.key)) out.push({display:w.display, key:w.key});
-  }
-  return out;
-}
-
-function initRound(){
-  state.pool = buildPoolFromKeys(state.settings.poolKeys);
-  state.remainingIdx = Array.from({length: state.pool.length}, (_,i)=>i);
-  state.usedIdx = [];
-  state.currentIdx = null;
-  state.scoredThisWord = false;
-  state.started = true;
-  save();
-}
-
-/* ===== UI helpers ===== */
+/* ===== HELPERS ===== */
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, (m)=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[m]));
 }
-function toast(idEl, msg){
-  idEl.textContent = msg || "";
+function nowISO(){ return new Date().toISOString(); }
+function toastMsg(msg){ toast.textContent = msg || ""; }
+
+function wordByKey(key){
+  return MASTER_WORDS.find(w=>w.key===key) || {display:key, key:key};
 }
 
-/* ===== Tabs ===== */
-function setTab(which){
-  tabSetup.classList.toggle("active", which==="setup");
-  tabGame.classList.toggle("active", which==="game");
-  tabReport.classList.toggle("active", which==="report");
-
-  setupView.classList.toggle("hide", which!=="setup");
-  gameView.classList.toggle("hide", which!=="game");
-  reportView.classList.toggle("hide", which!=="report");
-
-  if(which==="report") renderReport();
+function initRoundFromSelection(){
+  const keys = Array.from(new Set(state.selectedKeys)).filter(Boolean);
+  state.remainingKeys = keys.slice();
+  state.usedKeys = [];
+  state.currentKey = null;
+  state.scoredThisWord = false;
+  state.started = true;
+  save();
 }
 
-/* ===== Render: Players ===== */
+/* ===== UI RENDER ===== */
+function renderTopCounts(){
+  const sel = Array.isArray(state.selectedKeys) ? state.selectedKeys.length : 0;
+  const rem = Array.isArray(state.remainingKeys) ? state.remainingKeys.length : sel;
+  const used = Array.isArray(state.usedKeys) ? state.usedKeys.length : 0;
+
+  selectedTxt.textContent = `Selected words: ${sel}`;
+  remainingTxt.textContent = `Remaining: ${rem}`;
+  usedTxt.textContent = `Used: ${used}`;
+}
+
 function renderPlayers(){
   scoreTop.innerHTML = "";
   if(state.players.length === 0){
-    scoreTop.innerHTML = `<div class="toast">Add players (Aitana, Pedro…) then tap “Start / Resume”.</div>`;
+    scoreTop.innerHTML = `<div class="toast" style="text-align:left">Add players then tap “Start / Resume”.</div>`;
     return;
   }
+
   state.players.forEach((p, idx)=>{
     const div = document.createElement("div");
     div.className = "scoreCard" + (idx===state.active ? " active" : "");
@@ -1067,30 +1060,17 @@ function renderPlayers(){
     `;
     div.addEventListener("click", ()=>{
       const newName = prompt("Edit player name:", p.name);
-      if(newName===null) return;
+      if(newName === null) return;
       const t = newName.trim();
       if(!t) return;
       state.players[idx].name = t;
       save();
-      renderPlayers();
-      renderGame();
-      renderReport();
+      renderAll();
     });
     scoreTop.appendChild(div);
   });
 }
 
-/* ===== Render: Progress ===== */
-function renderProgress(){
-  const poolSize = state.pool?.length || buildPoolFromKeys(state.settings.poolKeys).length;
-  const rem = Array.isArray(state.remainingIdx) ? state.remainingIdx.length : 0;
-  const used = Array.isArray(state.usedIdx) ? state.usedIdx.length : 0;
-  remainingTxt.textContent = `Remaining: ${rem}`;
-  usedTxt.textContent = `Used: ${used}`;
-  poolTxt.textContent = `Pool: ${poolSize}`;
-}
-
-/* ===== Images / Audio ===== */
 function setImage(key){
   const src = `img/${key}.png`;
   wordImg.onerror = () => {
@@ -1099,145 +1079,158 @@ function setImage(key){
   };
   wordImg.src = src;
 }
+
 function setAudio(key){
   const src = `audio/${key}.mp3`;
   audioSource.src = src;
   audioPlayer.load();
 }
 
-/* ===== Render: Game ===== */
 function renderGame(){
   const hasPlayers = state.players.length > 0;
+  gameCard.style.display = hasPlayers ? "block" : "none";
+  if(!hasPlayers) return;
 
-  // images toggle (one-time per game)
-  imgWrap.classList.toggle("hide", !state.settings.showImages);
+  // options UI
+  showImagesChk.checked = !!state.options?.showImages;
+  autoPlayChk.checked = (state.options?.autoPlay !== false);
 
-  if(!hasPlayers){
-    activeSpeller.textContent = "—";
-    wordTxt.textContent = "Add players first";
-    hintTxt.textContent = "Go to Setup to add players.";
-    correctBtn.disabled = true;
-    wrongBtn.disabled = true;
-    spinBtn.disabled = true;
-    playBtn.disabled = true;
-    nextPlayerBtn.disabled = true;
-    audioSource.src = "";
-    audioPlayer.load();
-    if(state.settings.showImages) setImage("placeholder");
-    return;
-  }
-
-  spinBtn.disabled = false;
-  playBtn.disabled = false;
-  nextPlayerBtn.disabled = false;
+  imgWrap.style.display = state.options?.showImages ? "block" : "none";
 
   activeSpeller.textContent = state.players[state.active]?.name ?? "—";
 
-  if(state.currentIdx === null){
-    wordTxt.textContent = "Press SPIN";
-    hintTxt.textContent = "SPIN chooses a new unused word from your pool.";
+  if(!state.started){
+    wordTxt.textContent = "Press Start";
+    hintTxt.textContent = "Tap Start / Resume to begin.";
     correctBtn.disabled = true;
     wrongBtn.disabled = true;
+    repeatBtn.disabled = true;
+    setImage("placeholder");
     audioSource.src = "";
     audioPlayer.load();
-    if(state.settings.showImages) setImage("placeholder");
     return;
   }
 
-  const w = state.pool[state.currentIdx];
+  if(state.currentKey === null){
+    wordTxt.textContent = "Press SPIN";
+    hintTxt.textContent = "SPIN chooses a new unused word from your selected list.";
+    correctBtn.disabled = true;
+    wrongBtn.disabled = true;
+    repeatBtn.disabled = true;
+    if(state.options?.showImages) setImage("placeholder");
+    audioSource.src = "";
+    audioPlayer.load();
+    return;
+  }
+
+  const w = wordByKey(state.currentKey);
   wordTxt.textContent = w.display;
 
-  hintTxt.textContent = state.scoredThisWord
-    ? "Recorded ✅ Spin for the next word."
-    : "Tap PLAY AUDIO, then choose CORRECT or WRONG.";
+  if(state.scoredThisWord){
+    hintTxt.textContent = "Recorded ✅ Spin to get the next word.";
+  } else {
+    hintTxt.textContent = "Listen, then mark: CORRECT or WRONG.";
+  }
 
-  if(state.settings.showImages) setImage(w.key);
+  if(state.options?.showImages) setImage(w.key);
   setAudio(w.key);
 
+  // One score per word
   correctBtn.disabled = state.scoredThisWord;
   wrongBtn.disabled = state.scoredThisWord;
+  repeatBtn.disabled = false;
 }
 
-/* ===== Render: Setup Picker ===== */
-let tempSelectedKeys = new Set(); // selection UI only
-
-function pickerItemHTML(w, checked){
-  return `
-    <div class="pickItem">
-      <div>
-        <div class="w">${escapeHtml(w.display)}</div>
-        <div class="k">${escapeHtml(w.key)}</div>
-      </div>
-      <input class="big" type="checkbox" data-key="${escapeHtml(w.key)}" ${checked ? "checked" : ""} />
-    </div>
-  `;
+function renderAll(){
+  renderTopCounts();
+  renderPlayers();
+  renderGame();
 }
 
-function renderPicker(){
-  const q = (searchBox.value || "").trim().toLowerCase();
-  const visible = WORDS.filter(w=>{
-    if(!q) return true;
-    return w.display.toLowerCase().includes(q) || w.key.includes(q);
-  });
-
-  pickerList.innerHTML = visible.map(w=>pickerItemHTML(w, tempSelectedKeys.has(w.key))).join("");
-
-  pickerList.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb=>{
-    cb.addEventListener("change", ()=>{
-      const key = cb.getAttribute("data-key");
-      if(cb.checked) tempSelectedKeys.add(key);
-      else tempSelectedKeys.delete(key);
-      setupToast.textContent = `${tempSelectedKeys.size} selected`;
-    });
-  });
-
-  setupToast.textContent = `${tempSelectedKeys.size} selected`;
-}
-
-/* ===== Report ===== */
-function renderReport(){
-  reportGrid.innerHTML = "";
-
-  if(state.players.length === 0){
-    reportGrid.innerHTML = `<div class="repCard"><div class="repTitle">No players yet</div></div>`;
+/* ===== WORD PICK / NO REPEATS ===== */
+function pickNextKey(){
+  if(!Array.isArray(state.remainingKeys) || state.remainingKeys.length === 0){
+    toastMsg("Round finished ✅ Export report or tap Reset Round to start again.");
+    state.currentKey = null;
+    state.scoredThisWord = false;
+    save();
+    renderAll();
     return;
   }
-
-  for(const p of state.players){
-    const correct = p.correctKeys || [];
-    const wrong = p.wrongKeys || [];
-    const div = document.createElement("div");
-    div.className = "repCard";
-    div.innerHTML = `
-      <div class="repTitle">${escapeHtml(p.name)}</div>
-      <div class="pillRow">
-        <div class="pill">Score: ${p.score}</div>
-        <div class="pill">Correct: ${correct.length}</div>
-        <div class="pill">Wrong: ${wrong.length}</div>
-      </div>
-      <div style="font-weight:1000; margin-bottom:6px;">✅ Correct words</div>
-      <div class="listMini">${correct.length ? correct.map(k=>`<span>${escapeHtml(k)}</span>`).join("") : "<span>—</span>"}</div>
-      <div style="font-weight:1000; margin:12px 0 6px;">❌ Wrong words</div>
-      <div class="listMini">${wrong.length ? wrong.map(k=>`<span>${escapeHtml(k)}</span>`).join("") : "<span>—</span>"}</div>
-    `;
-    reportGrid.appendChild(div);
-  }
+  const r = Math.floor(Math.random() * state.remainingKeys.length);
+  const key = state.remainingKeys.splice(r,1)[0];
+  state.usedKeys.push(key);
+  state.currentKey = key;
+  state.scoredThisWord = false;
+  save();
+  renderAll();
 }
 
-function exportCSV(){
+function tryAutoPlay(){
+  if(!state.options?.autoPlay) return;
+  // iPhone/Safari requires user gesture; BUT after you press SPIN (gesture), this usually works.
+  audioPlayer.play().catch(()=>{
+    // Silent fail; user can press Repeat
+    toastMsg("If audio didn’t auto-play, tap Repeat (Safari rule).");
+  });
+}
+
+function scoreWord(result){ // "correct" or "wrong"
+  if(state.currentKey === null) return;
+  if(state.scoredThisWord) return; // prevents double-tap scoring
+
+  const player = state.players[state.active];
+  const w = wordByKey(state.currentKey);
+
+  if(result === "correct") player.score += 1;
+
+  const attemptN = state.attempts.length + 1;
+  state.attempts.push({
+    player: player.name,
+    key: w.key,
+    word: w.display,
+    result,
+    ts: nowISO(),
+    n: attemptN
+  });
+
+  state.scoredThisWord = true;
+  save();
+  renderAll();
+  toastMsg(result === "correct" ? "✅ Correct recorded." : "❌ Wrong recorded.");
+}
+
+function nextPlayer(){
+  if(state.players.length === 0) return;
+  state.active = (state.active + 1) % state.players.length;
+  save();
+  renderAll();
+  toastMsg(`Now it’s ${state.players[state.active].name}’s turn.`);
+}
+
+/* ===== REPORT ===== */
+function downloadCSV(){
   const rows = [];
-  rows.push(["timestamp","player","result","word_key","word_display"]);
-  for(const h of (state.history||[])){
-    rows.push([h.ts, h.player, h.result, h.key, h.display]);
-  }
+  rows.push(["attempt","timestamp","player","result","word","key"]);
+  (state.attempts || []).forEach(a=>{
+    rows.push([a.n, a.ts, a.player, a.result, a.word, a.key]);
+  });
+
+  // summary per player
   rows.push([]);
   rows.push(["SUMMARY"]);
-  rows.push(["player","score","correct_count","wrong_count"]);
-  for(const p of state.players){
-    rows.push([p.name, String(p.score), String((p.correctKeys||[]).length), String((p.wrongKeys||[]).length)]);
+  rows.push(["player","correct","wrong","total"]);
+  const map = new Map();
+  (state.attempts || []).forEach(a=>{
+    if(!map.has(a.player)) map.set(a.player, {c:0,w:0});
+    const o = map.get(a.player);
+    if(a.result==="correct") o.c++; else o.w++;
+  });
+  for(const [name, o] of map.entries()){
+    rows.push([name, o.c, o.w, o.c+o.w]);
   }
 
-  const csv = rows.map(r=>r.map(x=>`"${String(x||"").replaceAll('"','""')}"`).join(",")).join("\n");
+  const csv = rows.map(r=>r.map(x=>`"${String(x ?? "").replaceAll('"','""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1249,292 +1242,247 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-/* ===== Game Logic ===== */
-function ensurePoolReady(){
-  if(!Array.isArray(state.pool) || state.pool.length===0){
-    state.pool = buildPoolFromKeys(state.settings.poolKeys);
-  }
-  if(!Array.isArray(state.remainingIdx) || state.remainingIdx.length===0){
-    // if round not initialized, init
-    initRound();
-  }
+/* ===== WORDS MODAL (checkbox selection) ===== */
+let tempSelected = new Set();
+
+function openModal(){
+  // copy current selection into tempSelected
+  tempSelected = new Set((state.selectedKeys || []).slice());
+  searchWords.value = "";
+  renderWordsList();
+  modalOverlay.style.display = "flex";
 }
 
-function pickNextWord(){
-  ensurePoolReady();
+function closeModal(){
+  modalOverlay.style.display = "none";
+}
 
-  if(!Array.isArray(state.remainingIdx) || state.remainingIdx.length===0){
-    toast(toastGame, "Round finished ✅ Reset Round to start again.");
-    state.currentIdx = null;
-    state.scoredThisWord = false;
-    save();
-    renderProgress();
-    renderGame();
+function renderWordsList(){
+  const q = (searchWords.value || "").trim().toLowerCase();
+  wordsList.innerHTML = "";
+
+  const list = MASTER_WORDS.filter(w=>{
+    if(!q) return true;
+    return w.display.toLowerCase().includes(q) || w.key.includes(q);
+  });
+
+  list.forEach((w, idx)=>{
+    const row = document.createElement("div");
+    row.className = "wordItem";
+
+    const left = document.createElement("div");
+    left.className = "wordLeft";
+    left.innerHTML = `
+      <div class="wBadge">${w.display[0].toUpperCase()}</div>
+      <div>
+        <div style="font-weight:1000">${escapeHtml(w.display)}</div>
+        <div class="kbd">${w.key}</div>
+      </div>
+    `;
+
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.checked = tempSelected.has(w.key);
+    chk.style.transform = "scale(1.25)";
+    chk.addEventListener("change", ()=>{
+      if(chk.checked) tempSelected.add(w.key);
+      else tempSelected.delete(w.key);
+      selCount.textContent = String(tempSelected.size);
+    });
+
+    row.appendChild(left);
+    row.appendChild(chk);
+
+    // tap row toggles
+    row.addEventListener("click", (e)=>{
+      if(e.target === chk) return;
+      chk.checked = !chk.checked;
+      chk.dispatchEvent(new Event("change"));
+    });
+
+    wordsList.appendChild(row);
+  });
+
+  selCount.textContent = String(tempSelected.size);
+}
+
+function selectAll(){
+  tempSelected = new Set(MASTER_WORDS.map(w=>w.key));
+  renderWordsList();
+}
+function selectNone(){
+  tempSelected = new Set();
+  renderWordsList();
+}
+function selectRandom(n=25){
+  const all = MASTER_WORDS.map(w=>w.key);
+  // shuffle and pick n
+  for(let i=all.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [all[i], all[j]] = [all[j], all[i]];
+  }
+  tempSelected = new Set(all.slice(0, Math.min(n, all.length)));
+  renderWordsList();
+}
+
+function applySelection(){
+  const arr = Array.from(tempSelected);
+  if(arr.length === 0){
+    alert("Select at least 1 word.");
     return;
   }
+  state.selectedKeys = arr;
 
-  const r = Math.floor(Math.random() * state.remainingIdx.length);
-  const idx = state.remainingIdx.splice(r,1)[0];
-  state.usedIdx.push(idx);
-  state.currentIdx = idx;
-  state.scoredThisWord = false;
+  // IMPORTANT: Changing selection resets current round words (to avoid mismatches)
+  initRoundFromSelection();
+  toastMsg("Selection applied ✅ Round reset with your selected words.");
   save();
-  renderProgress();
-  renderGame();
+  renderAll();
+  closeModal();
 }
 
-function scoreWord(isCorrect){
-  if(state.currentIdx === null) return;
-  if(state.scoredThisWord) return;
+/* ===== EVENTS ===== */
+settingsBtn.addEventListener("click", openModal);
+openWordsBtn.addEventListener("click", openModal);
+closeModalBtn.addEventListener("click", closeModal);
+modalOverlay.addEventListener("click", (e)=>{
+  if(e.target === modalOverlay) closeModal();
+});
 
-  const p = state.players[state.active];
-  const w = state.pool[state.currentIdx];
+searchWords.addEventListener("input", renderWordsList);
+selectAllBtn.addEventListener("click", selectAll);
+selectNoneBtn.addEventListener("click", selectNone);
+selectRandomBtn.addEventListener("click", ()=>selectRandom(25));
+applyWordsBtn.addEventListener("click", applySelection);
 
-  const ts = new Date().toISOString();
-  const result = isCorrect ? "correct" : "wrong";
-  state.history.push({ts, player:p.name, result, key:w.key, display:w.display});
-
-  if(isCorrect){
-    p.score += 1;
-    p.correctKeys = (p.correctKeys||[]);
-    p.correctKeys.push(w.key);
-    toast(toastGame, "✅ Correct recorded.");
-  }else{
-    p.wrongKeys = (p.wrongKeys||[]);
-    p.wrongKeys.push(w.key);
-    toast(toastGame, "❌ Wrong recorded.");
+exportBtn.addEventListener("click", ()=>{
+  if((state.attempts||[]).length === 0){
+    alert("No attempts yet. Play at least one word first.");
+    return;
   }
+  downloadCSV();
+});
 
-  state.scoredThisWord = true;
+hardResetBtn.addEventListener("click", ()=>{
+  if(!confirm("Hard Reset deletes players, scores, attempts, and progress. Continue?")) return;
+  localStorage.removeItem(LS_KEY);
+  state = {
+    players: [],
+    active: 0,
+    selectedKeys: MASTER_WORDS.map(w=>w.key),
+    remainingKeys: [],
+    usedKeys: [],
+    currentKey: null,
+    scoredThisWord: false,
+    started: false,
+    options: { showImages:false, autoPlay:true },
+    attempts: []
+  };
+  toastMsg("Reset ✅ Add players and Start.");
+  renderAll();
+});
+
+showImagesChk.addEventListener("change", ()=>{
+  state.options = state.options || {};
+  state.options.showImages = !!showImagesChk.checked;
   save();
-  renderPlayers();
-  renderGame();
-}
+  renderAll();
+});
 
-function nextPlayer(){
-  if(state.players.length===0) return;
-  state.active = (state.active + 1) % state.players.length;
-  toast(toastGame, `Now it’s ${state.players[state.active].name}’s turn.`);
+autoPlayChk.addEventListener("change", ()=>{
+  state.options = state.options || {};
+  state.options.autoPlay = !!autoPlayChk.checked;
   save();
-  renderPlayers();
-  renderGame();
-}
-
-/* ===== Audio Play (MP3 + fallback TTS) ===== */
-let chosenVoice = null;
-function pickVoice(){
-  const voices = speechSynthesis.getVoices?.() || [];
-  chosenVoice =
-    voices.find(v => /en-US/i.test(v.lang) && /Siri|Enhanced|Google|Alex/i.test(v.name)) ||
-    voices.find(v => /en-US/i.test(v.lang)) ||
-    voices.find(v => /en-GB/i.test(v.lang)) ||
-    voices.find(v => /^en/i.test(v.lang)) ||
-    voices[0] || null;
-}
-if("speechSynthesis" in window){
-  speechSynthesis.onvoiceschanged = pickVoice;
-  pickVoice();
-}
-function speakFallback(word){
-  if(!("speechSynthesis" in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const ut = new SpeechSynthesisUtterance(word);
-    ut.lang = "en-US";
-    if(chosenVoice) ut.voice = chosenVoice;
-    ut.rate = 0.72;
-    ut.pitch = 1.0;
-    ut.volume = 1.0;
-    speechSynthesis.speak(ut);
-  }catch(e){}
-}
-
-function playAudio(){
-  if(state.currentIdx === null) return;
-  const w = state.pool[state.currentIdx];
-
-  const src = `audio/${w.key}.mp3`;
-  audioSource.src = src;
-  audioPlayer.load();
-
-  audioPlayer.play().then(()=>{
-    // ok
-  }).catch(()=>{
-    toast(toastGame, "If MP3 didn’t play, tap ▶️ on the audio bar. (Fallback voice speaking now.)");
-    speakFallback(w.display.toLowerCase());
-  });
-}
-
-/* ===== Setup Actions ===== */
-function applyWordPool(keys){
-  const pool = buildPoolFromKeys(keys);
-  if(pool.length === 0){
-    toast(toastGlobal, "Your selection produced 0 words. Using default 337.");
-    state.settings.poolKeys = [];
-  }else{
-    state.settings.poolKeys = keys;
-  }
-  // reset round when pool changes
-  initRound();
-  toast(toastGlobal, `Pool ready ✅ (${state.pool.length} words).`);
-  renderProgress();
-  renderGame();
-}
-
-function renderAll(){
-  // settings
-  imagesToggle.checked = !!state.settings.showImages;
-
-  // sync selection UI with saved poolKeys
-  tempSelectedKeys = new Set((state.settings.poolKeys||[]).map(k=>String(k).toLowerCase()));
-  renderPicker();
-
-  // pool/progress
-  if(!Array.isArray(state.pool) || state.pool.length===0){
-    state.pool = buildPoolFromKeys(state.settings.poolKeys);
-  }
-  renderProgress();
-
-  // players
-  renderPlayers();
-
-  // game
-  renderGame();
-
-  // report
-  renderReport();
-}
-
-/* ===== Events ===== */
-tabSetup.addEventListener("click", ()=>setTab("setup"));
-tabGame.addEventListener("click", ()=>setTab("game"));
-tabReport.addEventListener("click", ()=>setTab("report"));
-
-imagesToggle.addEventListener("change", ()=>{
-  state.settings.showImages = !!imagesToggle.checked;
-  save();
-  renderGame();
-});
-
-searchBox.addEventListener("input", ()=>renderPicker());
-
-selAllBtn.addEventListener("click", ()=>{
-  tempSelectedKeys = new Set(WORDS.map(w=>w.key));
-  renderPicker();
-});
-clearBtn.addEventListener("click", ()=>{
-  tempSelectedKeys.clear();
-  renderPicker();
-});
-
-useSelectedBtn.addEventListener("click", ()=>{
-  const keys = Array.from(tempSelectedKeys);
-  applyWordPool(keys);
-});
-useAllBtn.addEventListener("click", ()=>{
-  tempSelectedKeys.clear();
-  applyWordPool([]);
-  renderPicker();
+  renderAll();
 });
 
 addPlayerBtn.addEventListener("click", ()=>{
   const name = (playerName.value || "").trim();
   if(!name) return;
-  state.players.push({name, score:0, correctKeys:[], wrongKeys:[]});
+  // avoid exact duplicates (optional)
+  if(state.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){
+    alert("That player already exists.");
+    return;
+  }
+  state.players.push({name, score:0});
   playerName.value = "";
   if(state.players.length === 1) state.active = 0;
   save();
-  renderPlayers();
-  renderGame();
-  renderReport();
-  toast(toastGlobal, "Player added ✅");
+  renderAll();
 });
 
 startBtn.addEventListener("click", ()=>{
   if(state.players.length === 0){
-    toast(toastGlobal, "Add at least 1 player first.");
+    toastMsg("Add at least 1 player first.");
     return;
   }
-  if(!state.started){
-    initRound();
-  }else{
-    // ensure pool exists (resume)
-    state.pool = buildPoolFromKeys(state.settings.poolKeys);
+  // if not started or invalid round, init
+  if(!state.started || !Array.isArray(state.remainingKeys) || state.remainingKeys.length===0 && (state.usedKeys||[]).length===0){
+    initRoundFromSelection();
+  } else {
+    state.started = true;
+    save();
   }
-  toast(toastGlobal, "Ready ✅ Go to Game tab and press SPIN.");
-  save();
-  renderProgress();
-  renderGame();
-});
-
-resetRoundBtn.addEventListener("click", ()=>{
-  if(!confirm("Reset the round? (words start over, no repeats again)")) return;
-  initRound();
-  toast(toastGlobal, "Round reset ✅");
-  toast(toastGame, "");
-  // keep history (you still have report)
-  save();
-  renderProgress();
-  renderGame();
-});
-
-resetScoresBtn.addEventListener("click", ()=>{
-  if(!confirm("Reset all scores + per-player lists?")) return;
-  state.players = state.players.map(p=>({name:p.name, score:0, correctKeys:[], wrongKeys:[]}));
-  state.history = [];
-  state.scoredThisWord = false;
-  save();
-  renderPlayers();
-  renderReport();
-  toast(toastGlobal, "Scores reset ✅");
-});
-
-hardResetBtn.addEventListener("click", ()=>{
-  if(!confirm("Hard Reset deletes players, progress, settings, report. Continue?")) return;
-  hardReset();
-  toast(toastGlobal, "Hard reset done ✅");
-  setTab("setup");
+  toastMsg("Ready ✅ Tap SPIN.");
+  renderAll();
 });
 
 spinBtn.addEventListener("click", ()=>{
   if(state.players.length === 0){
-    toast(toastGame, "Add players first (Setup tab).");
+    toastMsg("Add players first.");
     return;
   }
-  if(!state.started) initRound();
+  if(!state.started) initRoundFromSelection();
 
-  gameView.classList.remove("spinAnim");
-  void gameView.offsetWidth;
-  gameView.classList.add("spinAnim");
+  gameCard.classList.remove("spinAnim");
+  void gameCard.offsetWidth;
+  gameCard.classList.add("spinAnim");
 
-  pickNextWord();
-  toast(toastGame, "");
+  pickNextKey();
+
+  // Auto play after word appears
+  setTimeout(()=>tryAutoPlay(), 120);
 });
 
-playBtn.addEventListener("click", ()=>playAudio());
-correctBtn.addEventListener("click", ()=>scoreWord(true));
-wrongBtn.addEventListener("click", ()=>scoreWord(false));
-nextPlayerBtn.addEventListener("click", ()=>nextPlayer());
+repeatBtn.addEventListener("click", ()=>{
+  if(state.currentKey === null) return;
+  audioPlayer.play().catch(()=>{
+    toastMsg("Tap the ▶️ on the audio bar (Safari sometimes blocks).");
+  });
+});
 
-goReportBtn.addEventListener("click", ()=>setTab("report"));
-backToGameBtn.addEventListener("click", ()=>setTab("game"));
+correctBtn.addEventListener("click", ()=>scoreWord("correct"));
+wrongBtn.addEventListener("click", ()=>scoreWord("wrong"));
+nextPlayerBtn.addEventListener("click", nextPlayer);
 
-exportBtn.addEventListener("click", ()=>exportCSV());
-exportBtn2.addEventListener("click", ()=>exportCSV());
+resetRoundBtn.addEventListener("click", ()=>{
+  if(!confirm("Reset Round? (No repeats again from your selected words)")) return;
+  initRoundFromSelection();
+  toastMsg("Round reset ✅ Tap SPIN.");
+  save();
+  renderAll();
+});
 
-/* ===== Boot ===== */
+resetScoresBtn.addEventListener("click", ()=>{
+  if(!confirm("Reset all scores to 0?")) return;
+  state.players = state.players.map(p=>({name:p.name, score:0}));
+  toastMsg("Scores reset ✅");
+  save();
+  renderAll();
+});
+
+/* ===== BOOT ===== */
 load();
-if(!state.settings) state.settings = {showImages:true, poolKeys:[]};
-if(typeof state.settings.showImages !== "boolean") state.settings.showImages = true;
-if(!Array.isArray(state.settings.poolKeys)) state.settings.poolKeys = [];
-if(!Array.isArray(state.players)) state.players = [];
 
-state.pool = buildPoolFromKeys(state.settings.poolKeys);
+// backfill defaults if older state
+state.options = state.options || {showImages:false, autoPlay:true};
+state.selectedKeys = Array.isArray(state.selectedKeys) && state.selectedKeys.length ? state.selectedKeys : MASTER_WORDS.map(w=>w.key);
+state.remainingKeys = Array.isArray(state.remainingKeys) ? state.remainingKeys : [];
+state.usedKeys = Array.isArray(state.usedKeys) ? state.usedKeys : [];
+state.attempts = Array.isArray(state.attempts) ? state.attempts : [];
 
-// if started, keep remaining/used; else keep empty until start
 renderAll();
-setTab("setup");
-toast(toastGlobal, "Select words (optional), set Images ON/OFF, add players, then Start / Resume.");
+toastMsg("Tip: filenames must match lowercase keys (img/{key}.png • audio/{key}.mp3).");
 </script>
 </body>
 </html>
